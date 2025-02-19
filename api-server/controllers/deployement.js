@@ -1,8 +1,6 @@
 import { ECSClient, RunTaskCommand } from "@aws-sdk/client-ecs";
 import { generateSlug } from "random-word-slugs";
-import { configDotenv } from "dotenv";
 
-configDotenv();
 // seting up ECS clinet
 const ecsClient = new ECSClient({
   region: "eu-north-1",
