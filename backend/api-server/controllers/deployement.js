@@ -1,7 +1,7 @@
 import { ECSClient, RunTaskCommand } from "@aws-sdk/client-ecs";
 import Project from "../models/project.js";
 import Deployement from "../models/deployement.js";
-
+import User from "../models/user.js";
 // seting up ECS clinet
 const ecsClient = new ECSClient({
   region: "eu-north-1",
@@ -21,14 +21,19 @@ const config = {
 export const deployment = async (req, res) => {
   try {
     const { projectId } = req.body;
+    const userId = req.user.userId;
     const project = await Project.findById(projectId);
     if (!project) {
       return res.status(400).json({
         message: `oops! Project not Found`,
       });
     }
-
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     const deployment = new Deployement({
+      createdBy: user.name,
       projectId: projectId,
       status: "Queued",
     });
@@ -72,5 +77,18 @@ export const deployment = async (req, res) => {
   } catch (error) {
     console.error("Deployment Error:", error);
     return res.status(500).json({ error: error.message });
+  }
+};
+
+export const getDeploymentsByProjectId = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const deployments = await Deployement.find({ projectId: projectId });
+
+    res.status(200).json({ deployments: deployments });
+  } catch (error) {
+    console.error("Error fetching deployments:", error);
+
+    res.status(500).json({ message: "Something Went" });
   }
 };

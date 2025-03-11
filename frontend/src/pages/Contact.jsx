@@ -1,8 +1,6 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useState } from "react";
-
-function Signup() {
+function Contact() {
   const {
     register,
     formState: { errors },
@@ -35,8 +33,8 @@ function Signup() {
   };
   return (
     <>
-      <div className="row ">
-        <div className="col-6">
+      <div className="row d-flex justify-content-center flex-column align-items-center py-5">
+        <div className="col-6 loginForm my-5 py-5 ">
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* input for name */}
             <div className="mb-3">
@@ -81,38 +79,40 @@ function Signup() {
               {errors.email && (
                 <span className="text-danger">{errors.email.message}</span>
               )}
-              <div id="emailHelp" className="form-text">
+              <div id="emailHelp" className="form-text text-light">
                 We'll never share your email with anyone else.
               </div>
             </div>
-            {/* input for password */}
+            {/* input for message */}
             <div className="mb-3">
-              <label htmlFor="exampleInputEmail1" className="form-label">
-                Password
+              <label htmlFor="message" className="form-label">
+                Message
               </label>
-              <input
-                type="text"
+              <textarea
+                name="message"
+                id="message"
                 className="form-control"
-                id="password"
-                {...register("password", {
-                  required: "password is required",
+                {...register("message", {
+                  required: "Message is required",
                   pattern: {
-                    value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
-                    message:
-                      "Password: 8-20 chars, 1 upper, 1 lower, 1 number, 1 special (@$!%*?&).",
+                    value: /^.{20,}$/,
+                    message: "Message should be at least 20 characters",
                   },
                 })}
-              />
-              {errors.password && (
-                <span className="text-danger">{errors.password?.message}</span>
+              ></textarea>
+              {errors.message && (
+                <span className="text-danger">{errors.message.message}</span>
               )}
             </div>
-            <button type="submit">{"signup"}</button>
+
+            <button type="submit" className="btn-main">
+              Send{" "}
+            </button>
           </form>
         </div>
       </div>
     </>
   );
 }
-export default Signup;
+
+export default Contact;

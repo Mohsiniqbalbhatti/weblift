@@ -10,13 +10,14 @@ const client = createClient({
 
 export const getLogs = async (req, res) => {
   try {
-    const { deploymentId } = req.body;
+    const { deploymentId } = req.params;
     const logs = await client.query({
       query: `SELECT event_id, deployment_id, log, timestamp FROM log_events WHERE deployment_id = {deployment_id:String}`,
       query_params: { deployment_id: deploymentId },
       format: "JSONEachRow",
     });
     const rawLogs = await logs.json();
+
     return res.status(200).json({ logs: rawLogs });
   } catch (error) {
     console.log("Error sending logs", error);

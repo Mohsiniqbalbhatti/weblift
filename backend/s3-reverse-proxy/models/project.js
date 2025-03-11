@@ -20,6 +20,10 @@ const projectSchema = new mongoose.Schema({
   customDomain: {
     type: String,
   },
+  visits: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

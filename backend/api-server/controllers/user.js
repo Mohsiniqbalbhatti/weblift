@@ -90,6 +90,19 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Something Went Wrong" });
   }
 };
+export const Logout = async (req, res) => {
+  try {
+    res.cookie("token", "", {
+      httpOnly: true,
+      expires: new Date(0),
+      path: "/",
+    });
+    return res.status(200).json({ message: "Logout Success!" });
+  } catch (error) {
+    console.log("Login Error", error);
+    res.status(500).json({ message: "Something Went Wrong" });
+  }
+};
 
 // send User
 export const sendUser = async (req, res) => {
@@ -104,6 +117,7 @@ export const sendUser = async (req, res) => {
       name: userExist.name,
       email: userExist.email,
       isVarified: userExist.isVarified,
+      githubToken: userExist.gtihubToken,
     };
 
     return res

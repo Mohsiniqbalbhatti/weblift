@@ -24,7 +24,6 @@ await connectDB();
 
 initKafkaConsumer();
 app.use(express.json());
-initKafkaConsumer();
 app.use("/user", userRouter);
 app.use("/project", projectRouter);
 app.use("/logs", logsRouter);

@@ -22,12 +22,19 @@ app.use(async (req, res) => {
   try {
     const project = await Project.findOne({ subDomain: subDomain });
     id = project._id;
+    // we can calculate analytics
+    const newVisits = (project.visits || 0) + 1;
+
+    await Project.findByIdAndUpdate(
+      id,
+      { $set: { visits: newVisits } },
+      { new: true }
+    );
   } catch (error) {
     console.log("error in getting project id", error);
   }
   // Construct S3 URL for the subdomain
   let resolveTo = `${baseUrl}${id}`;
-
   // If the request is for "/", modify it to serve "index.html"
   if (req.url === "/") {
     req.url = "/index.html"; // Rewrite URL to explicitly request index.html

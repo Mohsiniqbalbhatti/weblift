@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 const deployementSchema = new mongoose.Schema({
+  createdBy: {
+    type: String,
+  },
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
