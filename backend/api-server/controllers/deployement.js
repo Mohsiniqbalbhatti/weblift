@@ -19,6 +19,7 @@ const config = {
 
 // deployment function
 export const deployment = async (req, res) => {
+  console.log("request recived");
   try {
     const { projectId } = req.body;
     const userId = req.user.userId;

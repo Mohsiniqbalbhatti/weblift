@@ -80,7 +80,9 @@ function Navbar() {
                 Login
               </Link>
 
-              <button className="btn btn-main">Get Started</button>
+              <Link className="btn btn-main" to={"/signup"}>
+                Get Started
+              </Link>
             </div>
           </div>
         </div>

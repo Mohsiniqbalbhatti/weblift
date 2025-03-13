@@ -12,7 +12,7 @@ export const newProject = async (req, res) => {
         message: `oops! Project name ${projectName} already exist. Try Someother name.`,
       });
     }
-
+    const subdomainLowerCase = projectName.toLowerCase();
     const user = await User.findById(userId);
     const project = new Project({
       createdBy: userId,
@@ -21,10 +21,9 @@ export const newProject = async (req, res) => {
       gitUrl: gitUrl,
       buildComand: buildComand || "npm run build",
       createdAt: Date.now(),
-      subDomain: projectName,
+      subDomain: subdomainLowerCase,
     });
     await project.save();
-    await deployment();
     return res.status(200).json({
       message: `Project ${projectName} Created.`,
       projectID: project._id,

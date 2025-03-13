@@ -87,12 +87,12 @@ function Dashboard() {
                   onClick={() => handleProjectClick(project._id)}
                 >
                   <img
-                    src="https://api.microlink.io/?url=https%3A%2F%2Fstately-bunny-ac9692.netlify.app&screenshot=true&embed=screenshot.url"
+                    src="https://api.microlink.io/?url=https://bugsbunnyreact.netlify.app&screenshot=true&embed=screenshot.url"
                     alt="preview"
                     className="me-4"
                     style={{
                       width: "150px",
-                      height: "150px",
+                      height: "130px",
                       borderRadius: "20px",
                     }}
                   />
@@ -107,7 +107,10 @@ function Dashboard() {
                       Owned By <strong>Mohsin Iqbal</strong>
                     </p>
                     <p>
-                      Published on <strong>Jan 15</strong>
+                      Published on{" "}
+                      <strong>
+                        {new Date(project?.createdAt).toLocaleString()}
+                      </strong>
                     </p>
                   </div>
                   <FaCaretRight className="fs-3 my-auto" />

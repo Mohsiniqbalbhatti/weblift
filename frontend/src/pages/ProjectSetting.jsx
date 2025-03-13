@@ -13,47 +13,44 @@ function ProjectSetting() {
   const [logs, setlogs] = useState([]);
 
   const [load, setLoad] = useState(false);
+  const getProjectInfo = async () => {
+    setLoad(true);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}project/${projectId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.data) {
+        setProject(res.data.project);
+        console.log(res.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoad(false);
+    }
+  };
+  const getDeployements = async () => {
+    setLoad(true);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}deploy/getdeployments/${projectId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.data) {
+        setDeployements(res.data.deployments);
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoad(false);
+    }
+  };
   useEffect(() => {
-    const getProjectInfo = async () => {
-      setLoad(true);
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}project/${projectId}`,
-          {
-            withCredentials: true,
-          }
-        );
-        if (res.data) {
-          setProject(res.data.project);
-          console.log(res.data);
-        }
-      } catch (error) {
-        console.log("error", error);
-      } finally {
-        setLoad(false);
-      }
-    };
-    const getDeployements = async () => {
-      setLoad(true);
-      try {
-        const res = await axios.get(
-          `${
-            import.meta.env.VITE_BACKEND_URL
-          }deploy/getdeployments/${projectId}`,
-          {
-            withCredentials: true,
-          }
-        );
-        if (res.data) {
-          setDeployements(res.data.deployments);
-        }
-      } catch (error) {
-        console.log("error", error);
-      } finally {
-        setLoad(false);
-      }
-    };
-
     getDeployements();
     getProjectInfo();
   }, []);
@@ -78,11 +75,16 @@ function ProjectSetting() {
     }
   };
 
-  const triggerDeployement = async (projectId) => {
+  const triggerDeployement = async () => {
+    const data = {
+      projectId: projectId,
+    };
+
     setLoad(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}deploy`,
+        data,
         {
           withCredentials: true,
         }
@@ -90,9 +92,14 @@ function ProjectSetting() {
 
       if (res.status === 200) {
         toast.success("Deployment triggered");
+        await getDeployements();
+      } else if (res.status === 400 || 404) {
+        toast.error(res.data.message);
       }
     } catch (error) {
       console.log("Error", error);
+    } finally {
+      setLoad(false);
     }
   };
   return (
@@ -108,7 +115,7 @@ function ProjectSetting() {
                 <div className="row g-0 align-items-center px-2">
                   <div className="col-md-4">
                     <img
-                      src="https://api.microlink.io/?url=https%3A%2F%2Fstately-bunny-ac9692.netlify.app&screenshot=true&embed=screenshot.url"
+                      src="https://api.microlink.io/?url=https://bugsbunnyreact.netlify.app&screenshot=true&embed=screenshot.url"
                       className="img-fluid rounded-start"
                       alt="..."
                     />
@@ -116,6 +123,13 @@ function ProjectSetting() {
                   <div className="col-md-8">
                     <div className="card-body">
                       <h5 className="card-title">{project?.project_Name}</h5>
+                      <a
+                        className="cursor-pointer text-white"
+                        href={`http://${project?.project_Name}.localhost:8000`}
+                        target="_blank"
+                      >
+                        Visit Live{" "}
+                      </a>
                       <p className="my-0">
                         Deploy Type <strong>Github</strong>
                       </p>
@@ -134,7 +148,7 @@ function ProjectSetting() {
         </div>
 
         <div className="col-6 mt-5 pt-5">
-          <div className="card mb-3">
+          <div className="card mb-3" style={{ minHeight: "387px" }}>
             <div className="row g-0 align-items-center px-2">
               <div className="col-12">
                 <div className="card-body">
@@ -173,7 +187,7 @@ function ProjectSetting() {
             </div>
           </div>
         </div>
-        <div className="col-12 card">
+        <div className="col-12 card mt-4">
           <div className="d-flex justify-content-between">
             {" "}
             <h3 className="text-center mt-4">Production Deploys</h3>
@@ -202,7 +216,10 @@ function ProjectSetting() {
                       Deployed By <strong>Mohsin Iqbal</strong>
                     </p>
                     <p>
-                      Deployment Date <strong>{deployment.createdAt}</strong>
+                      Deployment Date{" "}
+                      <strong>
+                        {new Date(deployment?.createdAt).toLocaleString()}
+                      </strong>
                     </p>
                   </div>
                   <FaCaretRight className="fs-3 my-auto" />

@@ -33,19 +33,7 @@ function Analytics() {
   });
 
   return (
-    <div className="row justify-content-center my-5 py-5" ref={ref}>
-      <div className="col-12 mt-5 pt-5 d-flex justify-content-center flex-column align-items-center">
-        {/* Updated catchy heading */}
-        <h3 className="mt-5 text-cream text-center">
-          Get Real-Time Visitor Trends
-        </h3>
-        {/* Updated description text */}
-        <p className="text-light text-center w-50">
-          Visualize your site's performance with an interactive chart that
-          displays daily visitor counts. Hover over data points to reveal exact
-          numbers and uncover peak traffic times.
-        </p>
-      </div>
+    <div className="row justify-content-center" ref={ref}>
       <div className="analytics-box">
         {inView && (
           <ResponsiveContainer width="100%" height={300}>

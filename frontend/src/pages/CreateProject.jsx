@@ -5,9 +5,9 @@ import { FaCaretRight } from "react-icons/fa";
 import { useUser } from "../context/AuthUser";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function CreateProject() {
-  const navigate = Navigate();
+  const navigate = useNavigate();
   const [load, setLoad] = useState(false);
   const [repos, setRepos] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
@@ -39,7 +39,7 @@ function CreateProject() {
         toast.success("Project Create SuccessFully");
 
         setInterval(() => {
-          navigate(`/project/${projectID}`);
+          navigate(`/project/${res?.data?.projectID}`);
         }, 2000);
       }
     } catch (error) {
@@ -115,7 +115,7 @@ function CreateProject() {
           <p className="text-center">
             Select any Repo and Start Your new Project.
           </p>
-          {repos.length > 0 ? (
+          {repos?.length > 0 ? (
             <ul className="project-list">
               {/* List item representing a deployment project */}
               {repos.map((repo, index) => (
@@ -136,7 +136,10 @@ function CreateProject() {
                       Created By <strong>{repo?.owner?.login}</strong>
                     </p>
                     <p>
-                      created At <strong>{repo.created_at}</strong>
+                      created At{" "}
+                      <strong>
+                        {new Date(repo?.created_at).toLocaleString()}
+                      </strong>
                     </p>
                   </div>{" "}
                   <FaCaretRight className="fs-3 my-auto" />

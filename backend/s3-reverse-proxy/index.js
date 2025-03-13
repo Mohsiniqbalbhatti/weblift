@@ -17,30 +17,39 @@ const proxy = httpProxy.createProxyServer({ changeOrigin: true });
 app.use(async (req, res) => {
   const hostname = req.hostname;
   const subDomain = hostname.split(".")[0];
-  // query database for subdomain
+
   let id;
   try {
-    const project = await Project.findOne({ subDomain: subDomain });
-    id = project._id;
-    // we can calculate analytics
-    const newVisits = (project.visits || 0) + 1;
-
-    await Project.findByIdAndUpdate(
-      id,
-      { $set: { visits: newVisits } },
-      { new: true }
-    );
+    console.log("subdomain", subDomain);
+    const allProjects = await Project.find({});
+    console.log("all project", allProjects);
+    const myProject = await Project.findOne({ subDomain: subDomain });
+    if (myProject) {
+      id = myProject._id;
+      console.log("project", myProject);
+      // Update visit count
+      const newVisits = (myProject.visits || 0) + 1;
+      await Project.findByIdAndUpdate(
+        id,
+        { $set: { visits: newVisits } },
+        { new: true }
+      );
+    } else {
+      console.log("No project found for subdomain:", subDomain);
+    }
   } catch (error) {
     console.log("error in getting project id", error);
   }
-  // Construct S3 URL for the subdomain
-  let resolveTo = `${baseUrl}${id}`;
+
+  // Construct S3 URL using the obtained project id (if any)
+  const resolveTo = id ? `${baseUrl}${id}` : baseUrl;
+
   // If the request is for "/", modify it to serve "index.html"
   if (req.url === "/") {
     req.url = "/index.html"; // Rewrite URL to explicitly request index.html
   }
 
-  // Proxy Request to S3
+  // Proxy the request to S3
   proxy.web(req, res, { target: resolveTo }, (err) => {
     console.error("Proxy Error:", err);
     res.status(500).send("Proxy Error");

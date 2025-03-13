@@ -111,7 +111,7 @@ function Nav2() {
                 </li>
                 <li>
                   <a className="dropdown-item" href="#">
-                    Create Team
+                    Your Team
                   </a>
                 </li>
                 <li>
