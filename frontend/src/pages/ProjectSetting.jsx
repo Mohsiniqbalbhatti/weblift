@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function ProjectSetting() {
   const { projectId } = useParams();
   const [Deployements, setDeployements] = useState([]);
   const [project, setProject] = useState(null);
-  const [logs, setlogs] = useState([]);
-
   const [load, setLoad] = useState(false);
+  const navigate = useNavigate();
+
   const getProjectInfo = async () => {
     setLoad(true);
     try {
@@ -24,14 +24,15 @@ function ProjectSetting() {
       );
       if (res.data) {
         setProject(res.data.project);
-        console.log(res.data);
       }
     } catch (error) {
       console.log("error", error);
+      toast.error("Failed to load project info");
     } finally {
       setLoad(false);
     }
   };
+
   const getDeployements = async () => {
     setLoad(true);
     try {
@@ -42,37 +43,24 @@ function ProjectSetting() {
         }
       );
       if (res.data) {
-        setDeployements(res.data.deployments);
+        const reverseDeployements = res?.data?.deployments.reverse();
+        setDeployements(reverseDeployements);
       }
     } catch (error) {
       console.log("error", error);
+      toast.error("Failed to load deployments");
     } finally {
       setLoad(false);
     }
   };
+
   useEffect(() => {
     getDeployements();
     getProjectInfo();
-  }, []);
+  }, [projectId]);
 
   const handleDeploymentClick = async (deploymentId) => {
-    setLoad(true);
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}logs/${deploymentId}`,
-        {
-          withCredentials: true,
-        }
-      );
-      if (res.data) {
-        setlogs(res.data.logs);
-        console.log(res.data);
-      }
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      setLoad(false);
-    }
+    navigate(`/deployment/${deploymentId}`);
   };
 
   const triggerDeployement = async () => {
@@ -98,18 +86,18 @@ function ProjectSetting() {
       }
     } catch (error) {
       console.log("Error", error);
+      toast.error("Error triggering deployment");
     } finally {
       setLoad(false);
     }
   };
+
   return (
     <>
-      <div className="row px-3 ">
+      <div className="row px-3">
         {load && <Loader />}
         <div className="col-6">
-          {" "}
           <div className="row">
-            {" "}
             <div className="col-12 mt-5 pt-5">
               <div className="card mb-3">
                 <div className="row g-0 align-items-center px-2">
@@ -187,9 +175,9 @@ function ProjectSetting() {
             </div>
           </div>
         </div>
+
         <div className="col-12 card mt-4">
           <div className="d-flex justify-content-between">
-            {" "}
             <h3 className="text-center mt-4">Production Deploys</h3>
             <button className="btn-main my-3" onClick={triggerDeployement}>
               Trigger Deployment
@@ -197,13 +185,10 @@ function ProjectSetting() {
           </div>
           {Deployements.length > 0 ? (
             <ul className="project-list">
-              {/* List item representing a deployment project */}
               {Deployements.map((deployment) => (
                 <li
                   key={deployment._id}
                   className="project d-flex justify-content-center align-items-center"
-                  data-bs-toggle="modal"
-                  data-bs-target="#LogsModal"
                   title="Click to view Deployment Logs"
                   onClick={() => handleDeploymentClick(deployment._id)}
                 >
@@ -231,61 +216,8 @@ function ProjectSetting() {
           )}
         </div>
       </div>
-
-      {/* <!-- Logs Modal --> */}
-      <div
-        className="modal fade "
-        id="LogsModal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                Deployement Logs
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Logs</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {logs.map((log, index) => (
-                    <tr key={log.event_id}>
-                      <th scope="row">{index + 1}</th>
-                      <td colspan="3">{log.log}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }
+
 export default ProjectSetting;

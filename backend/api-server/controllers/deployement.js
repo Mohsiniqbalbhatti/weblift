@@ -19,7 +19,6 @@ const config = {
 
 // deployment function
 export const deployment = async (req, res) => {
-  console.log("request recived");
   try {
     const { projectId } = req.body;
     const userId = req.user.userId;
@@ -35,6 +34,7 @@ export const deployment = async (req, res) => {
     }
     const deployment = new Deployement({
       createdBy: user.name,
+      projectName: project.project_Name,
       projectId: projectId,
       status: "Queued",
     });
@@ -63,6 +63,7 @@ export const deployment = async (req, res) => {
             environment: [
               { name: "GIT_REPOSITORY_URL", value: project.gitUrl },
               { name: "PROJECT_ID", value: projectId },
+              { name: "BUILD_COMMAND", value: project.buildComand },
               { name: "DEPLOYEMENT_ID", value: deployment._id.toString() },
             ],
           },
@@ -91,5 +92,24 @@ export const getDeploymentsByProjectId = async (req, res) => {
     console.error("Error fetching deployments:", error);
 
     res.status(500).json({ message: "Something Went" });
+  }
+};
+
+export const getDeployementById = async (req, res) => {
+  try {
+    const { deploymentId } = req.params;
+    const deployement = await Deployement.findById(deploymentId);
+    if (!deployement) {
+      return res
+        .status(400)
+        .json({ message: "Deployment with this id not Found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "success", deployement: deployement });
+  } catch (error) {
+    console.error("Error sendig deployment by id", error);
+    res.status(500).json({ message: "something went wrong" });
   }
 };

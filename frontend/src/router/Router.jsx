@@ -6,27 +6,34 @@ import Signup from "../Guest/Signup";
 import ProjectSetting from "../pages/ProjectSetting";
 import Dashboard from "../pages/Dashboard";
 import Contact from "../pages/Contact";
-import { UserExist } from "./ProtectedRoute";
 import CreateProject from "../pages/CreateProject";
+import Deployement from "../pages/Deployement";
+import Guest from "../Guest/Guest";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Guest />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
       { path: "/contact", element: <Contact /> },
+    ],
+  },
+  {
+    path: "", // This route should handle authenticated users
+    element: <App />,
+    children: [
+      { path: "/dashboard", element: <Dashboard /> },
+      { path: "/project/:projectId", element: <ProjectSetting /> },
       {
-        element: <UserExist />,
-        children: [
-          { path: "/dashboard", element: <Dashboard /> },
-          { path: "/project/:projectId", element: <ProjectSetting /> },
-          { path: "/createProject/githubRepo", element: <CreateProject /> },
-        ],
+        path: "/deployment/:deploymentId",
+        element: <Deployement />,
       },
+      { path: "/createProject/githubRepo", element: <CreateProject /> },
     ],
   },
 ]);
+
 export default router;

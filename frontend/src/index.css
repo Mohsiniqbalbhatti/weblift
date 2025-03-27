@@ -290,8 +290,39 @@ th {
   margin-block: 20px;
 }
 /* logs */
-.logs-list {
-  list-style: none;
+/* Table container with max-height and scroll */
+.table-container {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Table itself */
+.logsTable {
+  width: 100%; /* Ensure the table takes full width of the container */
+  display: block; /* Allow scrolling */
+}
+
+/* Customizing the scrollbar for Webkit browsers (Chrome, Safari, etc.) */
+.table-container::-webkit-scrollbar {
+  width: 8px; /* Set the width of the scrollbar */
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Round the corners */
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Color when hovering over the scrollbar thumb */
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track (background) */
+  border-radius: 10px; /* Round the corners of the track */
+}
+
+.table-container::-webkit-scrollbar-track:hover {
+  background: #e1e1e1; /* Darker color of the track on hover */
 }
 
 .modal-content {

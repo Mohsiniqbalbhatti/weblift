@@ -19,7 +19,7 @@ export const newProject = async (req, res) => {
       CreatedByName: user.name,
       project_Name: projectName,
       gitUrl: gitUrl,
-      buildComand: buildComand || "npm run build",
+      buildComand: buildComand.trim() || "npm run build",
       createdAt: Date.now(),
       subDomain: subdomainLowerCase,
     });
@@ -29,7 +29,7 @@ export const newProject = async (req, res) => {
       projectID: project._id,
     });
   } catch (error) {
-    console.log("Error creating project", error);
+    console.error("Error creating project", error);
     return res.status(500).json({ message: "Something went wrong." });
   }
 };
@@ -48,7 +48,7 @@ export const sendProjects = async (req, res) => {
       .status(200)
       .json({ message: "Projects Fetched", projects: projects });
   } catch (error) {
-    console.log("Error while sending projects", error);
+    console.error("Error while sending projects", error);
     res.status(500).json({ message: "Somthing went Wrong" });
   }
 };
@@ -56,14 +56,13 @@ export const sendProjects = async (req, res) => {
 export const getProjectById = async (req, res) => {
   try {
     const { projectId } = req.params;
-    console.log(projectId);
     const project = await Project.findById(projectId);
 
     return res
       .status(200)
       .json({ message: "Projects Fetched", project: project });
   } catch (error) {
-    console.log("Error while sending projects", error);
+    console.error("Error while sending projects", error);
     res.status(500).json({ message: "Somthing went Wrong" });
   }
 };
@@ -79,7 +78,7 @@ export const checkName = async (req, res) => {
     }
     res.status(200).json({ message: "Name available.Go Ahead" });
   } catch (error) {
-    console.log("error name check", error);
+    console.error("error name check", error);
     res.status(500).json({ message: "Something Went Wrong" });
   }
 };

@@ -24,7 +24,7 @@ const s3Client = new S3Client({
 
 const PROJECT_ID = process.env.PROJECT_ID;
 const DEPLOYEMENT_ID = process.env.DEPLOYEMENT_ID;
-
+const BUILD_COMMAND = process.env.BUILD_COMMAND;
 // configure kafka
 const kafka = new Kafka({
   clientId: `docker-build-server ${DEPLOYEMENT_ID}`,
@@ -63,7 +63,7 @@ const init = async () => {
 
   // Run build synchronously to prevent process hanging
   try {
-    execSync(`cd ${outDirPath} && npm install && npm run build`, {
+    execSync(`cd ${outDirPath} && npm install && ${BUILD_COMMAND}`, {
       stdio: "inherit",
     });
     await publishLog("Build Complete");

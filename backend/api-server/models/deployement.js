@@ -8,6 +8,9 @@ const deployementSchema = new mongoose.Schema({
     ref: "Project",
     required: true,
   },
+  projectName: {
+    type: String,
+  },
   status: {
     type: String,
     default: "NotStarted",
