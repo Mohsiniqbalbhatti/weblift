@@ -4,7 +4,6 @@ import { sendMail } from "../utils/mailSender.js";
 import jwt from "jsonwebtoken";
 // signup
 export const signup = async (req, res) => {
-  console.log("signup");
   try {
     const { email, password, name } = req.body;
 
@@ -50,13 +49,13 @@ export const signup = async (req, res) => {
     const to = email;
     const subject = `Kindly Verify Your WebLift Account`;
     const body = `<h1>Hey ${name}!</h1> </br> <p> Kindly verify your <strong>Weblift</strong> account. </br> This Link is valid for 15 minutes. But you can always request a new link from your account.</br> Here is the verification Link: </p>`;
-    await sendMail(to, subject, body);
+    // await sendMail(to, subject, body);
 
     return res
       .status(200)
       .json({ message: "Signup Success Kindly Verify your email." });
   } catch (error) {
-    console.log("Error Signup", error);
+    console.error("Error Signup", error);
     res.status(500).json({ message: "Something Went Wrong" });
   }
 };
@@ -86,7 +85,7 @@ export const login = async (req, res) => {
     });
     return res.status(200).json({ message: "Login Success!" });
   } catch (error) {
-    console.log("Login Error", error);
+    console.error("Login Error", error);
     res.status(500).json({ message: "Something Went Wrong" });
   }
 };
@@ -99,7 +98,7 @@ export const Logout = async (req, res) => {
     });
     return res.status(200).json({ message: "Logout Success!" });
   } catch (error) {
-    console.log("Login Error", error);
+    console.error("Login Error", error);
     res.status(500).json({ message: "Something Went Wrong" });
   }
 };
@@ -114,6 +113,7 @@ export const sendUser = async (req, res) => {
     }
 
     const userData = {
+      _id: userExist._id,
       name: userExist.name,
       email: userExist.email,
       isVarified: userExist.isVarified,
@@ -124,7 +124,7 @@ export const sendUser = async (req, res) => {
       .status(200)
       .json({ message: "User Data Recived.", user: userData });
   } catch (error) {
-    console.log("error sending User", error);
+    console.error("error sending User", error);
     return res.status(500).json({ message: "Something went wrong." });
   }
 };

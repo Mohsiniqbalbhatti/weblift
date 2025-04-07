@@ -13,8 +13,8 @@ function Login() {
   const [load, setLoad] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const { setUser } = useUser();
   const navigate = useNavigate();
+  const { setUser } = useUser();
   const {
     register,
     formState: { errors },
@@ -80,10 +80,11 @@ function Login() {
   //github login
   // 🔹 User clicks "Login with GitHub" (calls backend)
   const loginWithGithub = () => {
+    const state = "/login";
     window.location.assign(
       `https://github.com/login/oauth/authorize?client_id=${
         import.meta.env.VITE_GITHUB_CLIENT_ID
-      }&scope=repo,user,email`
+      }&scope=repo,user,email&state=${state}`
     );
   };
   useEffect(() => {
@@ -91,15 +92,28 @@ function Login() {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const githubCodeParam = urlParams.get("code");
+      const githubStateParam = decodeURIComponent(urlParams.get("state"));
+      console.log("state", githubStateParam);
+      console.log("code", githubCodeParam);
 
-      if (!githubCodeParam) return; // ✅ Exit if no GitHub code is found
-      if (githubCodeParam) {
-        setLoad(true);
+      if (
+        githubCodeParam &&
+        githubStateParam &&
+        githubStateParam !== "/login"
+      ) {
+        window.location.href = `${githubStateParam}?code=${githubCodeParam}`;
+        return;
       }
-      if (sessionStorage.getItem("github-login")) return; // ✅ Prevent duplicate requests
-      sessionStorage.setItem("github-login", "true"); // ✅ Set flag to prevent re-execution
-      setLoad(true);
+      if (!githubCodeParam) {
+        console.log("code not found");
+        return;
+      } // ✅ Exit if no GitHub code is found
+      if (localStorage.getItem("github-login")) return; // ✅ Prevent duplicate requests
+      localStorage.setItem("github-login", "true"); // ✅ Set flag to prevent re-execution
+
       try {
+        setLoad(true);
+        console.log("Sending request to login");
         const response = await axios.post(
           `${import.meta.env.VITE_BACKEND_URL}user/github-login`,
           { code: githubCodeParam },
@@ -114,7 +128,7 @@ function Login() {
         console.error("GitHub Login Error:", error);
         toast.error("GitHub Login Failed");
       } finally {
-        sessionStorage.removeItem("github-login"); // ✅ Allow retry with a new code
+        localStorage.removeItem("github-login"); // ✅ Allow retry with a new code
         setLoad(false); // End loading state
       }
     };

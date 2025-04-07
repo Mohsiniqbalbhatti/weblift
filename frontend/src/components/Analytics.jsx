@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -11,9 +12,9 @@ import {
 } from "recharts";
 import { useInView } from "react-intersection-observer";
 
-// Updated data array to include date and visitors count for each day
-const data = [
-  { date: "2025-03-01", visitors: 2400 }, // Added date key and renamed pv to visitors
+// Default static data
+const defaultData = [
+  { date: "2025-03-01", visitors: 2400 },
   { date: "2025-03-02", visitors: 1398 },
   { date: "2025-03-03", visitors: 9800 },
   { date: "2025-03-04", visitors: 1400 },
@@ -25,38 +26,70 @@ const data = [
   { date: "2025-03-10", visitors: 5300 },
 ];
 
-function Analytics() {
-  // Using react-intersection-observer to trigger the chart render when the component is fully in view
-  const { ref, inView } = useInView({
-    triggerOnce: true, // Trigger the animation only once
-    threshold: 1, // Fire when 100% of the component is visible
-  });
+function Analytics({ projectId }) {
+  const [data, setData] = useState(defaultData);
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 1 });
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        if (!projectId) return;
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}project/${projectId}/analytics`,
+          { withCredentials: true }
+        );
+
+        if (res.data.dailyVisits.length > 0) {
+          // CHANGED: map backend `count` → `visitors` and format date strings
+          const formatted = res.data.dailyVisits.map((item) => ({
+            date: new Date(item.date).toISOString().split("T")[0],
+            visitors: item.count,
+          }));
+          setData(formatted);
+        } else {
+          // Fallback to generated data if no visits yet
+          setData(generateFallbackData(res.data.createdAt));
+        }
+      } catch (error) {
+        console.error("Error fetching analytics:", error);
+      }
+    };
+
+    fetchAnalytics();
+  }, [projectId]);
+
+  const generateFallbackData = (createdAt) => {
+    const startDate = new Date(createdAt);
+    const daysDiff = Math.ceil(
+      (new Date() - startDate) / (1000 * 60 * 60 * 24)
+    );
+    return Array.from({ length: daysDiff }, (_, i) => ({
+      date: new Date(startDate.getTime() + i * 86400000)
+        .toISOString()
+        .split("T")[0],
+      visitors: 0,
+    }));
+  };
 
   return (
     <div className="row justify-content-center" ref={ref}>
       <div className="analytics-box">
         {inView && (
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data} margin={{ top: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              {/* Set XAxis to use the 'date' key */}
-              <XAxis dataKey="date" padding={{ left: 30, right: 30 }} />
-              {/* YAxis displays the number of visitors */}
-              <YAxis domain={[0, 10000]} />
-              <Tooltip
-                contentStyle={{ backgroundColor: "#fff" }} // Tooltip background color
-                labelStyle={{ color: "#555" }} // Tooltip label text style
-                itemStyle={{ color: "#333" }} // Tooltip data text style
+            {/* CHANGED: always use `data` state; it starts as defaultData and becomes real when projectId is set */}
+            <LineChart data={data}>
+              <XAxis dataKey="date" />
+              <YAxis
+                domain={[0, (dataMax) => Math.ceil(dataMax * 1.1)]}
+                tickFormatter={(value) =>
+                  new Intl.NumberFormat("en").format(value)
+                }
               />
-              <Legend />
-              {/* Updated the Line component to use 'visitors' as the data key */}
+              <Tooltip />
               <Line
-                type="monotone"
                 dataKey="visitors"
                 stroke="#EDEDD6"
                 dot={{ fill: "#34D0BA" }}
-                activeDot={{ fill: "#34D0BA", r: 8 }}
-                name="Visitors"
               />
             </LineChart>
           </ResponsiveContainer>

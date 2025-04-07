@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "../components/Loader";
-import { FaCaretRight } from "react-icons/fa";
+import { FaCaretRight, FaGithub } from "react-icons/fa";
 import { useUser } from "../context/AuthUser";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import logo from "../assets/logo.png";
+import github from "../assets/GitHub.png";
+
 import { useNavigate } from "react-router-dom";
 function CreateProject() {
   const navigate = useNavigate();
   const [load, setLoad] = useState(false);
+  const [githubLogin, setGithubLogin] = useState(true);
   const [repos, setRepos] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [checkName, setCheckName] = useState([]);
+  const [projectNameCheck, setProjectNameCheck] = useState(false);
   const { user } = useUser();
   const githubToken = user?.githubToken;
   const {
@@ -53,6 +58,11 @@ function CreateProject() {
   //check name availability
   const handleNameCheck = async () => {
     const projectName = watch("projectName");
+    if (projectName.trim() === "") {
+      toast.error("Project Name cant be empty");
+      return;
+    }
+    setProjectNameCheck(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}project/checkName`,
@@ -77,13 +87,19 @@ function CreateProject() {
     } catch (error) {
       console.log("Error", error);
       toast.error("Somthing Went Wrong");
+    } finally {
+      setProjectNameCheck(false);
     }
   };
 
   //fetch repos
   useEffect(() => {
     console.log(user);
-    if (!githubToken) return;
+    if (!githubToken) {
+      setGithubLogin(false);
+      return;
+    }
+
     const getRepos = async () => {
       console.log("function runned");
       setLoad(true);
@@ -104,52 +120,135 @@ function CreateProject() {
     getRepos();
   }, []);
 
-  //
+  //  login with github
+  //  User clicks "Login with GitHub" (calls backend)
+  const connectGithub = () => {
+    const state = "/createProject/githubRepo";
+
+    window.location.assign(
+      `https://github.com/login/oauth/authorize?client_id=${
+        import.meta.env.VITE_GITHUB_CLIENT_ID
+      }&scope=repo,user,email&state=${state}`
+    );
+  };
+  useEffect(() => {
+    const fetchGitHubToken = async () => {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const githubCodeParam = urlParams.get("code");
+      const githubStateParam = urlParams.get("state");
+
+      if (!githubCodeParam) {
+        console.log("not proceeding as code doesnt exists");
+        return;
+      }
+      if (githubCodeParam) {
+        setLoad(true);
+      }
+      if (sessionStorage.getItem("connect-github")) return; // ✅ Prevent duplicate requests
+      sessionStorage.setItem("connect-github", "true"); // ✅ Set flag to prevent re-execution
+
+      try {
+        const data = {
+          code: githubCodeParam,
+          userEmail: user?.email,
+        };
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}user/connectGithub`,
+          data,
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          window.location.href =
+            githubStateParam || "/createProject/githubRepo";
+        }
+      } catch (error) {
+        console.error("GitHub connection Error:", error);
+        toast.error(error.response.data.message || "Something went wrong.");
+      } finally {
+        sessionStorage.removeItem("connect-github");
+        setLoad(false);
+      }
+    };
+
+    fetchGitHubToken();
+  }, []);
 
   return (
     <>
-      <div className="row pt-5">
+      <div className="row pt-5 px-2 px-lg-3" style={{ minHeight: "80vh" }}>
         {load && <Loader />}
-        <div className="col-12 mt-5  card">
-          <h3 className="text-center mt-4">Your Github Respositories</h3>
-          <p className="text-center">
-            Select any Repo and Start Your new Project.
-          </p>
-          {repos?.length > 0 ? (
-            <ul className="project-list">
-              {/* List item representing a deployment project */}
-              {repos.map((repo, index) => (
-                <li
-                  key={index}
-                  className="project d-flex justify-content-center align-items-center"
-                  data-bs-toggle="modal"
-                  data-bs-target="#createProjectModal"
-                  title="Click to select this repo"
-                  onClick={() => setSelectedRepo(repo)}
-                >
-                  <div className="d-flex flex-column">
-                    <h5>{repo?.name}</h5>
-                    <p>{repo?.visibility}</p>
-                  </div>
-                  <div className="d-flex flex-column ms-auto me-5">
-                    <p>
-                      Created By <strong>{repo?.owner?.login}</strong>
-                    </p>
-                    <p>
-                      created At{" "}
-                      <strong>
-                        {new Date(repo?.created_at).toLocaleString()}
-                      </strong>
-                    </p>
-                  </div>{" "}
-                  <FaCaretRight className="fs-3 my-auto" />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No Repositories Found</p>
-          )}
-        </div>
+        {githubLogin ? (
+          <div className="col-12 mt-5  card">
+            <h3 className="text-center mt-4">Your Github Respositories</h3>
+            <p className="text-center">
+              Select any Repo and Start Your new Project.
+            </p>
+            {repos?.length > 0 ? (
+              <ul className="project-list">
+                {/* List item representing a deployment project */}
+                {repos.map((repo, index) => (
+                  <li
+                    key={index}
+                    className="project d-flex justify-content-center align-items-center"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createProjectModal"
+                    title="Click to select this repo"
+                    onClick={() => setSelectedRepo(repo)}
+                  >
+                    <div className="d-flex flex-column">
+                      <h5>{repo?.name}</h5>
+                      <p>{repo?.visibility}</p>
+                    </div>
+                    <div className="d-flex flex-column ms-auto me-5">
+                      <p>
+                        Created By <strong>{repo?.owner?.login}</strong>
+                      </p>
+                      <p>
+                        created At{" "}
+                        <strong>
+                          {new Date(repo?.created_at).toLocaleString()}
+                        </strong>
+                      </p>
+                    </div>{" "}
+                    <FaCaretRight className="fs-3 my-auto" />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No Repositories Found</p>
+            )}
+          </div>
+        ) : (
+          <div className="col-12 mt-5  card d-flex justify-content-center align-items-center">
+            <h5 className="my-3">
+              Authenticate your account with github to get Repo Acess!
+            </h5>
+            <div className="d-flex justify-content-center align-items-center">
+              <img
+                src={logo}
+                alt="weblift.png"
+                className="img-fluid pe-2"
+                style={{ width: "180px" }}
+              />{" "}
+              x
+              <img
+                src={github}
+                alt="weblift.png"
+                className="img-fluid ps-2"
+                style={{ width: "80px", height: "80px", filter: "invert(1)" }}
+              />
+            </div>
+            <button
+              className="px-3 py-2 w-25 border-0 my-4 rounded-pill my-2"
+              onClick={connectGithub}
+            >
+              Login with Github <FaGithub className="fs-4" />
+            </button>
+          </div>
+        )}
       </div>
       {/* <!-- Create Project Modal --> */}
       <div
@@ -195,7 +294,7 @@ function CreateProject() {
                       className="btn-danger btn"
                       onClick={handleNameCheck}
                     >
-                      Check Name
+                      {projectNameCheck ? "Checking Name" : "Check Name"}
                     </button>
                     <p
                       className={`my-auto ${

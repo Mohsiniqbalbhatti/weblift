@@ -15,25 +15,49 @@ const baseUrl = "https://weblift.s3.eu-north-1.amazonaws.com/__output/";
 const proxy = httpProxy.createProxyServer({ changeOrigin: true });
 
 app.use(async (req, res) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const hostname = req.hostname;
   const subDomain = hostname.split(".")[0];
 
   let id;
   try {
-    console.log("subdomain", subDomain);
-    const allProjects = await Project.find({});
-    console.log("all project", allProjects);
     const myProject = await Project.findOne({ subDomain: subDomain });
     if (myProject) {
       id = myProject._id;
-      console.log("project", myProject);
       // Update visit count
-      const newVisits = (myProject.visits || 0) + 1;
-      await Project.findByIdAndUpdate(
-        id,
-        { $set: { visits: newVisits } },
-        { new: true }
-      );
+      // Replace the existing visit tracking code with:
+      try {
+        // Try to update existing daily entry
+        const updatedProject = await Project.findOneAndUpdate(
+          {
+            _id: id,
+            "dailyVisits.date": today,
+          },
+          {
+            $inc: {
+              visits: 1,
+              "dailyVisits.$.count": 1,
+            },
+          },
+          { new: true }
+        );
+
+        // If no entry for today, create new one
+        if (!updatedProject) {
+          await Project.findByIdAndUpdate(id, {
+            $inc: { visits: 1 },
+            $push: {
+              dailyVisits: {
+                date: today,
+                count: 1,
+              },
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Error updating visits:", error);
+      }
     } else {
       console.log("No project found for subdomain:", subDomain);
     }
@@ -42,8 +66,9 @@ app.use(async (req, res) => {
   }
 
   // Construct S3 URL using the obtained project id (if any)
+  console.log("id", id);
   const resolveTo = id ? `${baseUrl}${id}` : baseUrl;
-
+  console.log("resolve to", resolveTo);
   // If the request is for "/", modify it to serve "index.html"
   if (req.url === "/") {
     req.url = "/index.html"; // Rewrite URL to explicitly request index.html

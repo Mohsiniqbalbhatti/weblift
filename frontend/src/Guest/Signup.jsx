@@ -1,15 +1,22 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import Loader from "../components/Loader";
+import { FaEye, FaRegEyeSlash } from "react-icons/fa6";
 
 function Signup() {
+  const [load, setLoad] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm();
   const onSubmit = async (data) => {
-    console.log("Data", data);
+    setLoad(true);
     const userData = {
       name: data.name,
       email: data.email,
@@ -17,7 +24,7 @@ function Signup() {
     };
     try {
       const res = await axios.post(
-        `http://localhost:9000/user/signup`,
+        `${import.meta.env.VITE_BACKEND_URL}user/signup`,
         userData,
         {
           withCredentials: true,
@@ -26,16 +33,41 @@ function Signup() {
 
       if (res.data) {
         console.log(res?.data);
-        alert("suc", res?.data?.message);
+        toast.success(res?.data?.message);
+        window.location.href = "/login";
       }
     } catch (error) {
       console.log("signup Error", error);
-      alert(error?.response?.data?.message || "Something Went Wrong!");
+      toast.error(error?.response?.data?.message || "Something Went Wrong!");
+    } finally {
+      setLoad(false);
     }
+  };
+
+  // password toggle code
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  const password = watch("password");
+  useEffect(() => {
+    if (password && password.length > 0) {
+      setIsTyping(true);
+    } else {
+      setIsTyping(false);
+    }
+  }, [password]);
+  const eyeplace = {
+    position: "absolute",
+    right: "33px",
+    top: "69.9%",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
+    color: "black",
   };
   return (
     <>
       <div className="row justify-content-center flex-column align-items-center  pt-5 ">
+        {load && <Loader />}
         <div className="col-6 loginForm my-5 py-5">
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* input for name */}
@@ -87,23 +119,22 @@ function Signup() {
             </div>
             {/* input for password */}
             <div className="mb-3">
-              <label htmlFor="exampleInputEmail1" className="form-label">
+              <label htmlFor="password" className="form-label">
                 Password
               </label>
               <input
-                type="text"
+                type={!showPassword ? "password" : "text"}
                 className="form-control"
                 id="password"
                 {...register("password", {
                   required: "password is required",
-                  pattern: {
-                    value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
-                    message:
-                      "Password: 8-20 chars, 1 upper, 1 lower, 1 number, 1 special (@$!%*?&).",
-                  },
                 })}
               />
+              {isTyping && (
+                <span style={eyeplace} onClick={togglePasswordVisibility}>
+                  {!showPassword ? <FaRegEyeSlash /> : <FaEye />}
+                </span>
+              )}
               {errors.password && (
                 <span className="text-danger">{errors.password?.message}</span>
               )}

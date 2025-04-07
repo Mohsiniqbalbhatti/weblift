@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
 export const githubLogin = async (req, res) => {
+  console.log("login request");
   const { code } = req.body;
-  console.log(code);
   if (!code) return res.status(400).json({ message: "GitHub code missing" });
 
   try {
@@ -21,9 +21,7 @@ export const githubLogin = async (req, res) => {
     );
 
     const accessToken = tokenResponse.data.access_token;
-    console.log(tokenResponse.data);
-    console.log("GitHub Access Token:", accessToken);
-
+    console.log("access token", accessToken);
     if (!accessToken) {
       return res.status(400).json({ message: "Failed to get GitHub token" });
     }
@@ -33,6 +31,7 @@ export const githubLogin = async (req, res) => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const githubdata = userResponse.data;
+    console.log("githubdata", githubdata);
     if (!githubdata.id) {
       return res.status(400).json({ message: "GitHub ID is missing!" });
     }
@@ -41,6 +40,7 @@ export const githubLogin = async (req, res) => {
 
     // Step 3: Fetch email if missing
     if (!email) {
+      console.log("trying to get email");
       const emailResponse = await axios.get(
         "https://api.github.com/user/emails",
         {
@@ -58,12 +58,13 @@ export const githubLogin = async (req, res) => {
 
     // Step 4: Find or Create User in DB
     let user = await User.findOne({ githubId: id });
-
-    // find email in db
     const mailExist = await User.findOne({ email: email });
 
-    //if user email already exist
-    if (mailExist.email === email) {
+    // Scenario 1: If the email exists and the GitHub ID matches
+    if (mailExist && mailExist.email === email) {
+      console.log("mailExist && mailExist.email === email");
+
+      // Update GitHub ID and token, mark account as verified
       mailExist.githubID = id;
       mailExist.gtihubToken = accessToken;
       mailExist.verified = true;
@@ -73,48 +74,56 @@ export const githubLogin = async (req, res) => {
       const token = jwt.sign(
         { userId: mailExist._id },
         process.env.JWT_SECRET,
-        {
-          expiresIn: "1h",
-        }
+        { expiresIn: "1h" }
       );
 
-      //step 6: Set/send HTTP-only cookie
-
+      // Step 6: Set/send HTTP-only cookie
       res.cookie("token", token, {
-        httpOnly: true, // Prevent access from JavaScript
-        secure: false, // change it to true in production
-        sameSite: "Strict", // Prevent CSRF
+        httpOnly: true,
+        secure: false, // change to true in production
+        sameSite: "Strict",
         maxAge: 3600000, // 1 hour expiry
       });
+
       // Step 7: Send Response
+      console.log("Login successful");
       return res.status(200).json({ message: "Login successful" });
-    } else if (!user && mailExist.email !== email) {
+    }
+
+    // Scenario 2: If the user with this github id  doesn't exist in the database create new user
+    else if (!user) {
+      console.log("mailExist && !user && mailExist.email !== email");
+
+      // Create a new user with the provided GitHub account
       user = new User({
         name: name || "GitHub User",
         email,
-        githubId: id,
-        githubToken: accessToken,
-        isVerified: true, // GitHub users are assumed verified
+        githubID: id,
+        gtihubToken: accessToken,
+        isVarified: true, // GitHub users are assumed verified
       });
+      console.log("user to be save", user);
       await user.save();
       // Step 5: Generate JWT token
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
 
-      //step 6: Set/send HTTP-only cookie
-
+      // Step 6: Set/send HTTP-only cookie
       res.cookie("token", token, {
-        httpOnly: true, // Prevent access from JavaScript
-        secure: false, // change it to true in production
-        sameSite: "Strict", // Prevent CSRF
-        maxAge: 3600000, // 1 hour expiry
+        httpOnly: true,
+        secure: false,
+        sameSite: "Strict",
+        maxAge: 3600000,
       });
+
+      console.log("Login successful");
+
       // Step 7: Send Response
-      res.status(200).json({ message: "Login successful" });
+      return res.status(200).json({ message: "Login successful" });
     }
   } catch (error) {
     console.error("GitHub Auth Error:", error);
-    res.status(500).json({ message: "GitHub login failed" });
+    return res.status(500).json({ message: "GitHub login failed" });
   }
 };
