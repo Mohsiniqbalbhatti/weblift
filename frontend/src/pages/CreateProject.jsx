@@ -48,7 +48,7 @@ function CreateProject() {
         }, 2000);
       }
     } catch (error) {
-      console.log("create Projet Error", error);
+      console.error("create Projet Error", error);
       toast.error(error?.response?.data?.message || "Something Went Wrong!");
     } finally {
       setLoad(false);
@@ -85,7 +85,7 @@ function CreateProject() {
         setCheckName(checkName);
       }
     } catch (error) {
-      console.log("Error", error);
+      console.error("Error", error);
       toast.error("Somthing Went Wrong");
     } finally {
       setProjectNameCheck(false);
@@ -94,21 +94,18 @@ function CreateProject() {
 
   //fetch repos
   useEffect(() => {
-    console.log(user);
     if (!githubToken) {
       setGithubLogin(false);
       return;
     }
 
     const getRepos = async () => {
-      console.log("function runned");
       setLoad(true);
       try {
         const res = await axios.get("https://api.github.com/user/repos", {
           headers: { Authorization: `Bearer ${githubToken}` },
         });
         if (res.data) {
-          console.log(res.data);
           setRepos(res.data);
         }
       } catch (error) {
@@ -139,7 +136,6 @@ function CreateProject() {
       const githubStateParam = urlParams.get("state");
 
       if (!githubCodeParam) {
-        console.log("not proceeding as code doesnt exists");
         return;
       }
       if (githubCodeParam) {
@@ -191,29 +187,32 @@ function CreateProject() {
                 {/* List item representing a deployment project */}
                 {repos.map((repo, index) => (
                   <li
-                    key={index}
-                    className="project d-flex justify-content-center align-items-center"
+                    className="  project d-flex justify-content-start align-items-start flex-row"
                     data-bs-toggle="modal"
                     data-bs-target="#createProjectModal"
                     title="Click to select this repo"
+                    key={index}
                     onClick={() => setSelectedRepo(repo)}
                   >
-                    <div className="d-flex flex-column">
-                      <h5>{repo?.name}</h5>
-                      <p>{repo?.visibility}</p>
+                    <div className="col d-flex flex-column flex-lg-row mt-3 mt-sm-0   ">
+                      {" "}
+                      <div className="d-flex flex-column justify-content-start align-items-start ">
+                        <h5>{repo?.name}</h5>
+                        <p>{repo?.visibility}</p>
+                      </div>
+                      <div className="d-flex flex-column ms-lg-auto me-lg-5 justify-content-start align-items-start">
+                        <p>
+                          Created By <strong>{repo?.owner?.login}</strong>
+                        </p>
+                        <p>
+                          created At{" "}
+                          <strong>
+                            {new Date(repo?.created_at).toLocaleString()}
+                          </strong>
+                        </p>
+                      </div>
                     </div>
-                    <div className="d-flex flex-column ms-auto me-5">
-                      <p>
-                        Created By <strong>{repo?.owner?.login}</strong>
-                      </p>
-                      <p>
-                        created At{" "}
-                        <strong>
-                          {new Date(repo?.created_at).toLocaleString()}
-                        </strong>
-                      </p>
-                    </div>{" "}
-                    <FaCaretRight className="fs-3 my-auto" />
+                    <FaCaretRight className="fs-3  my-auto me-auto mx-auto mx-sm-0" />
                   </li>
                 ))}
               </ul>

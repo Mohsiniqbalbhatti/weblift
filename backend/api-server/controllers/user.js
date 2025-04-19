@@ -1,4 +1,5 @@
 import User from "../models/user.js";
+import Contact from "../models/contact.js";
 import bcrypt from "bcrypt";
 import { sendMail } from "../utils/mailSender.js";
 import jwt from "jsonwebtoken";
@@ -126,5 +127,74 @@ export const sendUser = async (req, res) => {
   } catch (error) {
     console.error("error sending User", error);
     return res.status(500).json({ message: "Something went wrong." });
+  }
+};
+
+//login
+export const contact = async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+
+    const userMessage = new Contact({
+      name: name,
+      email: email,
+      message: message,
+    });
+    await userMessage.save();
+    return res.status(200).json({ message: "Message sent successfully!" });
+  } catch (error) {
+    console.error("Contact Error", error);
+    res.status(500).json({ message: "Something Went Wrong" });
+  }
+};
+
+export const changeEmail = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { email, newEmail, password } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+    if (user.email !== email) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    user.email = newEmail;
+    await user.save();
+
+    res.json({ message: "Email Changed", email: email });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", Error: error.message });
+  }
+};
+export const ChangePassword = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { password, newPassword } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password Changed Successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", Error: error.message });
   }
 };

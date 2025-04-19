@@ -71,19 +71,14 @@ function Nav2() {
           </a>
           <ul className="navbar-nav2 ms-auto mb-2 mb-lg-0 justify-content-center align-items-center ">
             <li className="nav-item mx-2 d-md-block d-none">
-              <a className="nav-link" href="#">
-                FeedBack
-              </a>
-            </li>
-            <li className="nav-item mx-2 d-md-block d-none">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/contact">
                 Need help?
-              </a>
+              </Link>
             </li>
             <li className="nav-item ms-2 me-4 d-md-block d-none">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/docs">
                 Docs
-              </a>
+              </Link>
             </li>
 
             <div className="dropdown ms-auto ms-3 me-2">
@@ -96,29 +91,23 @@ function Nav2() {
               ></FaCircleUser>
 
               <ul
-                className="dropdown-menu dropdown-menu-end"
+                className="dropdown-menu dropdown-menu-end dropdown-bg text-light"
                 aria-labelledby="userDropdown"
               >
                 <li>
-                  <Link className="dropdown-item" to={"/dashboard"}>
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Account Settings
+                  <a className="dropdown-item  text-light" href="/profile">
+                    Profile
                   </a>
                 </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Your Team
-                  </a>
-                </li>
+
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <button className="dropdown-item" onClick={handleLogout}>
+                  <button
+                    className="dropdown-item text-light"
+                    onClick={handleLogout}
+                  >
                     Log Out
                   </button>
                 </li>

@@ -1,40 +1,42 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import toast from "react-hot-toast";
 function Contact() {
   const {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
   const onSubmit = async (data) => {
-    console.log("Data", data);
-    const userData = {
+    const userMessage = {
       name: data.name,
       email: data.email,
-      password: data.password,
+      message: data.message,
     };
     try {
       const res = await axios.post(
-        `http://localhost:9000/user/signup`,
-        userData,
+        `${import.meta.env.VITE_BACKEND_URL}user/contact`,
+        userMessage,
         {
           withCredentials: true,
         }
       );
 
-      if (res.data) {
-        console.log(res?.data);
-        alert("suc", res?.data?.message);
+      if (res.data && res.status === 200) {
+        reset();
+        toast.success(res?.data?.message || "Message sent successfully!");
       }
     } catch (error) {
-      console.log("signup Error", error);
+      console.log("Contact Error", error);
       alert(error?.response?.data?.message || "Something Went Wrong!");
     }
   };
   return (
     <>
-      <div className="row d-flex justify-content-center flex-column align-items-center py-5">
-        <div className="col-6 loginForm my-5 py-5 ">
+      <div className="row d-flex justify-content-center flex-column align-items-center py-5 px-2">
+        <h1 className="brand-text mt-2 pt-5">Contact Us</h1>
+        <div className="col-12 col-md-8 col-lg-6 loginForm  ">
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* input for name */}
             <div className="mb-3">

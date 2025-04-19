@@ -5,9 +5,7 @@ import {
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { useInView } from "react-intersection-observer";
@@ -29,8 +27,10 @@ const defaultData = [
 function Analytics({ projectId }) {
   const [data, setData] = useState(defaultData);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 1 });
+  const [noData, setNoData] = useState(false);
 
   useEffect(() => {
+    setNoData(false);
     const fetchAnalytics = async () => {
       try {
         if (!projectId) return;
@@ -38,13 +38,19 @@ function Analytics({ projectId }) {
           `${import.meta.env.VITE_BACKEND_URL}project/${projectId}/analytics`,
           { withCredentials: true }
         );
-
+        if (res.status === 202) {
+          setNoData(true);
+          console.log("res status", res.status);
+        }
         if (res.data.dailyVisits.length > 0) {
-          // CHANGED: map backend `count` → `visitors` and format date strings
-          const formatted = res.data.dailyVisits.map((item) => ({
-            date: new Date(item.date).toISOString().split("T")[0],
-            visitors: item.count,
-          }));
+          // CHANGED: Filter out entries that do not have a visitors count.
+          // Also, use the proper key `visitors` from the backend data.
+          const formatted = res.data.dailyVisits
+            .filter((item) => item.visitors !== undefined) // Only include entries with a visitors property
+            .map((item) => ({
+              date: new Date(item.date).toISOString().split("T")[0],
+              visitors: item.visitors, // Use visitors from backend data
+            }));
           setData(formatted);
         } else {
           // Fallback to generated data if no visits yet
@@ -72,29 +78,51 @@ function Analytics({ projectId }) {
   };
 
   return (
-    <div className="row justify-content-center" ref={ref}>
-      <div className="analytics-box">
-        {inView && (
-          <ResponsiveContainer width="100%" height={300}>
-            {/* CHANGED: always use `data` state; it starts as defaultData and becomes real when projectId is set */}
-            <LineChart data={data}>
-              <XAxis dataKey="date" />
-              <YAxis
-                domain={[0, (dataMax) => Math.ceil(dataMax * 1.1)]}
-                tickFormatter={(value) =>
-                  new Intl.NumberFormat("en").format(value)
-                }
-              />
-              <Tooltip />
-              <Line
-                dataKey="visitors"
-                stroke="#EDEDD6"
-                dot={{ fill: "#34D0BA" }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </div>
+    <div>
+      {noData ? (
+        <></>
+      ) : (
+        <>
+          {" "}
+          <div
+            className={`row   ${projectId ? "card  p-3 mt-5 pt-5" : ""}`}
+            ref={ref}
+          >
+            <div className="col-12 justify-content-center align-items-center">
+              {projectId && (
+                <h3 className="text-center my-2">
+                  Heres the Live Analytics for your site!
+                </h3>
+              )}
+              <div className="analytics-box mx-auto my-3">
+                {inView && (
+                  <ResponsiveContainer width="100%" height={300}>
+                    {/* CHANGED: Use the updated data state */}
+                    <LineChart data={data}>
+                      <XAxis dataKey="date" />
+                      <YAxis
+                        domain={[0, (dataMax) => Math.ceil(dataMax * 1.1)]}
+                        tickFormatter={(value) =>
+                          new Intl.NumberFormat("en").format(value)
+                        }
+                      />
+                      <Tooltip
+                        contentStyle={{ color: "#FF0000" }}
+                        labelStyle={{ color: "#FF0000" }}
+                      />
+                      <Line
+                        dataKey="visitors"
+                        stroke="#34D0BA"
+                        dot={{ fill: "#34D0BA" }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

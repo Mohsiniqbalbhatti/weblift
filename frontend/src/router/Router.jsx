@@ -9,6 +9,8 @@ import Contact from "../pages/Contact";
 import CreateProject from "../pages/CreateProject";
 import Deployement from "../pages/Deployement";
 import Guest from "../Guest/Guest";
+import UserProfile from "../pages/UserProfile";
+import QuickGuide from "../pages/QuickGuide";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
       { path: "/contact", element: <Contact /> },
+      { path: "/docs", element: <QuickGuide /> },
     ],
   },
   {
@@ -32,6 +35,7 @@ const router = createBrowserRouter([
         element: <Deployement />,
       },
       { path: "/createProject/githubRepo", element: <CreateProject /> },
+      { path: "/profile", element: <UserProfile /> },
     ],
   },
 ]);

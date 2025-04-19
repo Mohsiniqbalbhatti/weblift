@@ -5,7 +5,7 @@ import nuxt from "../assets/Nuxt.png";
 import { Link } from "react-router-dom";
 function Home() {
   return (
-    <>
+    <section id="home" className="px-2">
       <div className="row justify-content-center ">
         <div className="col-12 mt-5 pt-5">
           <h1 className="brand-text mt-5 pt-5">Lift Your Site in Minutes!</h1>
@@ -18,76 +18,89 @@ function Home() {
             a smooth, fast, and reliable launch.
           </p>
         </div>
-        <div className="col-3 d-flex justify-content-around">
-          <button className="btn btn-main">Deploy Now</button>
-          <button className="btn btn-2nd">Quick Guide</button>
+        <div className="col-8 col-sm-12 d-flex justify-content-around flex-column flex-sm-row">
+          <button className="btn btn-main ms-sm-auto mt-1 me-0 me-sm-1">
+            Deploy Now
+          </button>
+          <button className="btn btn-2nd me-sm-auto mt-1 ms-0 ms-sm-1">
+            Quick Guide
+          </button>
         </div>
       </div>
-      <div className="row justify-content-center mt-5 pt-5">
-        <div className="col-12 mt-5 pt-5 d-flex justify-content-center flex-column align-items-center">
-          {/* Updated catchy heading */}
-          <h3 className="mt-5 text-cream text-center">
+      <div className="row justify-content-center align-items-center pt-5">
+        <div className="col-12 mt-5 pt-5">
+          <h3 className=" mt-5 pt-5 text-center text-light">
             Get Real-Time Visitor Trends
           </h3>
-          {/* Updated description text */}
-          <p className="text-light text-center w-50">
+        </div>
+        <div className="col-12 col-md-8 col-lg-5 mt-0">
+          <p className="text-center text-light">
             Visualize your site's performance with an interactive chart that
             displays daily visitor counts. Hover over data points to reveal
             exact numbers and uncover peak traffic times.
           </p>
         </div>
       </div>
+      {/*  */}
+
       <Analytics />
-      <div className="row  justify-content-center flex-column align-items-center my-3">
-        <h2 className="brand-text mt-5">One Platform All your Sites!</h2>
-        <p className="text-light text-center w-75">
-          A developer experience that just works–optimized builds, collaborative
-          previews, and instant rollbacks on a global edge network. Focus on
-          your users and code while we handle the rest.
-        </p>
-      </div>
-      <div className="row justify-content-center mb-5 pb-5">
-        <div className="col-11">
-          <div className="row">
-            <div className="col-4">
-              <div className="card my-4">
-                <h4 className="card-title text-center ">
-                  Multiple Deployments🔄
-                </h4>
+      <section id="features" className="py-5">
+        {" "}
+        <div className="row  justify-content-center">
+          <div className="col-12">
+            <h1 className="brand-text mt-5">One Platform All your Sites!</h1>
+          </div>
+          <div className="col-10 mt-0">
+            <p className="home-text">
+              A developer experience that just works–optimized builds,
+              collaborative previews, and instant rollbacks on a global edge
+              network. Focus on your users and code while we handle the rest.
+            </p>
+          </div>
+        </div>
+        <div className="row justify-content-center mb-5 pb-5">
+          <div className="col-12">
+            <div className="row justify-content-center align-items-center">
+              <div className="col-10 col-md-6 col-lg-4">
+                <div className="card my-4">
+                  <h4 className="card-title text-center ">
+                    Multiple Deployments🔄
+                  </h4>
 
-                <p className="card-text py-3 text-justify">
-                  Deploy multiple versions to a single project so you can make
-                  changes without disrupting your live site.
-                </p>
+                  <p className="card-text py-3 text-justify">
+                    Deploy multiple versions to a single project so you can make
+                    changes without disrupting your live site.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="col-4">
-              <div className="card my-4">
-                <h4 className="card-title text-center ">
-                  Instant Deployment 🚀
-                </h4>
+              <div className="col-10  col-md-6 col-lg-4">
+                <div className="card my-4">
+                  <h4 className="card-title text-center ">
+                    Instant Deployment 🚀
+                  </h4>
 
-                <p className="card-text py-3 text-justify">
-                  Deploy your static site in moments by connecting your GitHub
-                  repository or uploading your files.
-                </p>
+                  <p className="card-text py-3 text-justify">
+                    Deploy your static site in moments by connecting your GitHub
+                    repository or uploading your files.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="col-4">
-              <div className="card my-4">
-                <h4 className="card-title text-center ">
-                  Seamless Integrations 🔌
-                </h4>
+              <div className="col-10  col-md-6 col-lg-4">
+                <div className="card my-4">
+                  <h4 className="card-title text-center ">
+                    Seamless Integrations 🔌
+                  </h4>
 
-                <p className="card-text py-3 text-justify">
-                  Integrate with popular frameworks such as React.js, Next.js,
-                  Angular effortlessly for a smooth and reliable launch
-                </p>
+                  <p className="card-text py-3 text-justify">
+                    Integrate with popular frameworks such as React.js, Next.js,
+                    Angular effortlessly for a smooth and reliable launch
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
       <div className="row">
         <div className="col-12">
           <h3 className="text-cream text-uppercase text-center">
@@ -96,8 +109,8 @@ function Home() {
         </div>
         <div className="col-12">
           {" "}
-          <div className="row">
-            <div className="col-4">
+          <div className="row justify-content-center align-items-center">
+            <div className="col-10  col-md-6 col-lg-4">
               <div className="card my-4 d-flex  justify-content-center flex-column align-items-center py-3 cursor-pointer">
                 <div className="img-box my-3">
                   <img
@@ -112,7 +125,7 @@ function Home() {
                 <h4 className=" text-center ">Build and Deploy with Astro</h4>
               </div>
             </div>
-            <div className="col-4">
+            <div className="col-10  col-md-6 col-lg-4">
               <div className="card my-4 d-flex  justify-content-center flex-column align-items-center py-3 cursor-pointer">
                 <div className="img-box my-3">
                   <img
@@ -127,7 +140,7 @@ function Home() {
                 <h4 className=" text-center ">Build and Deploy with Nuxt</h4>
               </div>
             </div>
-            <div className="col-4">
+            <div className="col-10  col-md-6 col-lg-4">
               <div className="card my-4 d-flex  justify-content-center flex-column align-items-center py-3 cursor-pointer">
                 <div className="img-box my-3">
                   <img
@@ -160,13 +173,16 @@ function Home() {
           <button className="btn-main">Request a Demo</button>
         </div>
       </div>
-      <div className="row my-5 justify-content-center flex-column align-items-center ">
+      <div
+        className="row my-5 justify-content-center flex-column align-items-center "
+        id="faq"
+      >
         <div className="col-12">
           <h3 className="text-cream text-uppercase text-center mb-4">
             Have a look on Frequently asked Questions !
           </h3>
         </div>
-        <div className="col-8">
+        <div className="col-12 col-md-10 col-lg-8">
           <div className="accordion" id="accordionExample">
             <div className="accordion-item">
               <h2 className="accordion-header">
@@ -274,7 +290,7 @@ function Home() {
           </div>
         </div>
       </div>
-    </>
+    </section>
   );
 }
 export default Home;

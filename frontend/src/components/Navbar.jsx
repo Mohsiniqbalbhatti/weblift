@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom"; // ✅ Renamed react-router-dom Link
+import { Link as ScrollLink } from "react-scroll"; // ✅ Renamed react-scroll Link
 
 function Navbar() {
   const [scroll, setScroll] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -19,6 +21,7 @@ function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
     <>
       <nav
@@ -47,42 +50,54 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav mx-auto mb-2 mb-lg-0 d-flex justify-content-center align-items-center">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">
+                <RouterLink
+                  className="nav-link active"
+                  aria-current="page"
+                  to="/"
+                >
                   Home
-                </Link>
+                </RouterLink>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/features">
+                <ScrollLink
+                  className="nav-link"
+                  to="features"
+                  smooth={true}
+                  duration={300}
+                >
                   Features
-                </Link>
+                </ScrollLink>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/docs">
+                <RouterLink className="nav-link" to="/docs">
                   Quick Guide
-                </Link>
+                </RouterLink>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="faq">
+                <ScrollLink
+                  className="nav-link"
+                  to="faq"
+                  smooth={true}
+                  duration={300}
+                >
                   FAQs
-                </Link>
+                </ScrollLink>
               </li>
-
               <li className="nav-item">
-                <Link className="nav-link" to={"/conact"}>
+                <RouterLink className="nav-link" to="/contact">
                   Contact
-                </Link>
+                </RouterLink>
               </li>
             </ul>
-            <div className="d-flex align-items-center ">
-              <Link className="nav-link me-3" to={"/login"}>
+            <div className="d-flex justify-content-center align-items-center flex-column flex-lg-row  ">
+              <RouterLink className="nav-link me-3" to="/login">
                 Login
-              </Link>
-
-              <Link className="btn btn-main" to={"/signup"}>
+              </RouterLink>
+              <RouterLink className="btn btn-main" to="/signup">
                 Get Started
-              </Link>
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -90,4 +105,5 @@ function Navbar() {
     </>
   );
 }
+
 export default Navbar;

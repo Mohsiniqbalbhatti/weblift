@@ -140,7 +140,8 @@ function ProjectSetting() {
 
   const checkdeploymentAccess = () => {
     if (!project || !user) return;
-    const isGitHubProject = project.deployment_Type === "Github";
+    const isGitHubProject = project.deployment_Type == "Github";
+    console.log("is github", isGitHubProject);
     setGithubDeployment(isGitHubProject);
     const member = project.teamMembers.find((m) => {
       const teamMemberId =
@@ -172,17 +173,14 @@ function ProjectSetting() {
   }, [project, user]);
   return (
     <>
-      <div className="row px-3 pt-5">
+      <div className="row px-3 pt-5 flex-column flex-lg-row">
         {load && <Loader />}
-        <div className="col-12 card p-3 mt-5 pt-5">
-          <h3 className="text-center my-2">
-            Heres the Live Analytics for your site!
-          </h3>
+        <div className="col-12 ">
           <Analytics projectId={projectId} />{" "}
         </div>
-        <div className="col-6">
+        <div className="col-12 col-lg-6">
           <div className="row">
-            <div className="col-12  pt-5">
+            <div className="col-12  pt-5 px-0">
               <div className="card mb-3">
                 <div className="row g-0 align-items-center px-2">
                   <div className="col-md-4">
@@ -213,7 +211,7 @@ function ProjectSetting() {
                 </div>
               </div>
             </div>
-            <div className="col-12">
+            <div className="col-12 px-0">
               <TeamList
                 team={team}
                 inviteCode={project?.teamInviteCode}
@@ -224,7 +222,7 @@ function ProjectSetting() {
           </div>
         </div>
 
-        <div className="col-6 mt-5 pt-5">
+        <div className="col-12 col-lg-6 pt-5 px-0 ps-lg-3 ">
           <div className="card mb-3" style={{ minHeight: "387px" }}>
             <div className="row g-0 align-items-center px-2">
               <div className="col-12">
@@ -278,7 +276,7 @@ function ProjectSetting() {
 
         {githubDeployment ? (
           <div className="col-12 card mt-3">
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between flex-column flex-md-row">
               <h3 className="text-center mt-4">Production Deploys</h3>
               {deploymentAccess && (
                 <button className="btn-main my-3" onClick={triggerDeployement}>
@@ -295,22 +293,25 @@ function ProjectSetting() {
                     title="Click to view Deployment Logs"
                     onClick={() => handleDeploymentClick(deployment._id)}
                   >
-                    <div className="d-flex flex-column">
-                      <h5>Deployment ID</h5>
-                      <p>{deployment?._id}</p>
+                    <div className="col d-flex flex-column flex-lg-row mt-3 mt-sm-0 justify-content-center align-items-center ">
+                      {" "}
+                      <div className="d-flex flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-start">
+                        <h5>Deployment ID</h5>
+                        <p>{deployment?._id}</p>
+                      </div>
+                      <div className="d-flex flex-column ms-lg-auto me-lg-5 justify-content-center align-items-center justify-content-sm-start align-items-sm-start">
+                        <p>
+                          Deployed By <strong>Mohsin Iqbal</strong>
+                        </p>
+                        <p>
+                          Deployment Date{" "}
+                          <strong>
+                            {new Date(deployment?.createdAt).toLocaleString()}
+                          </strong>
+                        </p>
+                      </div>
                     </div>
-                    <div className="d-flex flex-column ms-auto me-5">
-                      <p>
-                        Deployed By <strong>Mohsin Iqbal</strong>
-                      </p>
-                      <p>
-                        Deployment Date{" "}
-                        <strong>
-                          {new Date(deployment?.createdAt).toLocaleString()}
-                        </strong>
-                      </p>
-                    </div>
-                    <FaCaretRight className="fs-3 my-auto" />
+                    <FaCaretRight className="fs-3  my-auto me-auto mx-auto mx-sm-0" />
                   </li>
                 ))}
               </ul>
@@ -319,19 +320,15 @@ function ProjectSetting() {
             )}
           </div>
         ) : (
-          <div className="row  ">
-            <div className="col-12 px-auto ">
-              <div className="row card mx-auto">
-                {" "}
-                <div className="col-12 py-5">
-                  <h3 className="text-center text-light">
-                    Need to update the site ? just drop the folder
-                  </h3>{" "}
-                </div>
-                <div className="col-12">
-                  <FileDropZone dropfor={"existing"} projectId={projectId} />
-                </div>
-              </div>
+          <div className="row card mx-auto">
+            {" "}
+            <div className="col-12 py-5">
+              <h3 className="text-center text-light">
+                Need to update the site ? just drop the folder
+              </h3>{" "}
+            </div>
+            <div className="col-12">
+              <FileDropZone dropfor={"existing"} projectId={projectId} />
             </div>
           </div>
         )}

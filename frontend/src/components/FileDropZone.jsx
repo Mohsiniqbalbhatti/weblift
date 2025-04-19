@@ -150,7 +150,7 @@ function FileDropZone(props) {
   return (
     <>
       {load && <Loader />}
-      <div className="container-fluid">
+      <div className="">
         {" "}
         {/* Project Name Modal - Only for new projects */}
         {dropfor === "new" && (

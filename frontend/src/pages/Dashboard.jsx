@@ -4,6 +4,7 @@ import { FaCaretRight } from "react-icons/fa6";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { Link, useNavigate } from "react-router-dom";
+import { Link as ScrollLink } from "react-scroll";
 import { useUser } from "../context/AuthUser";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ function Dashboard() {
     return null;
   }
   const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
   const [load, setLoad] = useState(false);
   const fetchProjects = async () => {
     setLoad(true);
@@ -29,6 +31,7 @@ function Dashboard() {
       if (res.data) {
         console.log("res", res?.data);
         setProjects(res.data.projects);
+        setFilteredProjects(res.data.projects);
       }
     } catch (error) {
       console.log("error", error);
@@ -77,18 +80,36 @@ function Dashboard() {
       setLoad(false);
     }
   };
+
+  const searchProject = (e) => {
+    const value = e.target.value.toLowerCase();
+
+    if (!value) {
+      // ✅ Reset to full list when input is cleared
+      setFilteredProjects(projects);
+      return;
+    }
+
+    const matched = projects.filter((project) =>
+      project.project_Name.toLowerCase().includes(value)
+    );
+
+    setFilteredProjects(matched);
+  };
+
   return (
     <>
       <div className="row  pt-5 px-3">
         {load && <Loader />}
         <div className="dashboard mt-5">
-          <div className="col-12 d-flex justify-content-between  align-items-center ">
+          <div className="col-12 d-flex justify-content-between  align-items-center flex-column flex-md-row">
             <input
               type="text"
               placeholder="Search sites"
-              className="w-25  search"
+              className="w-auto  search"
+              onChange={(e) => searchProject(e)}
             />
-            <div className="d-flex ">
+            <div className="d-flex justify-content-between align-items-center my-3 my-md-0">
               <button
                 className="btn-main mx-1"
                 type="button"
@@ -97,7 +118,7 @@ function Dashboard() {
               >
                 Join Team
               </button>
-              <div className="dropdown ms-auto ms-3 me-2">
+              <div className="dropdown ms-auto ms-3 me-2 dropdown-bg">
                 <button
                   className="dropdown-toggle d-flex align-items-center  btn-main"
                   type="button"
@@ -114,16 +135,21 @@ function Dashboard() {
                 >
                   <li>
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item text-dark"
                       to={"/createProject/githubRepo"}
                     >
                       Import an existing Project
                     </Link>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <ScrollLink
+                      className="dropdown-item text-dark"
+                      to="drop"
+                      smooth="true"
+                      duration={300}
+                    >
                       Drop & Deploy
-                    </a>
+                    </ScrollLink>
                   </li>
                 </ul>
               </div>
@@ -132,9 +158,9 @@ function Dashboard() {
           <div className="col-12">
             <ul className="project-list">
               {/* li project */}
-              {projects.map((project) => (
+              {filteredProjects.map((project) => (
                 <li
-                  className="project d-flex justify-content-center align-items-center"
+                  className="  project d-flex justify-content-center align-items-center flex-column flex-sm-row"
                   key={project?._id}
                   title="Click to Get More Detail"
                   onClick={() => handleProjectClick(project?._id)}
@@ -149,29 +175,32 @@ function Dashboard() {
                       borderRadius: "20px",
                     }}
                   />
-                  <div className="d-flex flex-column">
-                    <h5>{project?.project_Name}</h5>
-                    <p>
-                      Deploy Type <strong>Github</strong>
-                    </p>
+                  <div className="col d-flex flex-column flex-lg-row mt-3 mt-sm-0 justify-content-center align-items-center ">
+                    {" "}
+                    <div className="d-flex flex-column justify-content-center align-items-center justify-content-sm-start align-items-sm-start">
+                      <h5>{project?.project_Name}</h5>
+                      <p>
+                        Deploy Type <strong>{project?.deployment_Type}</strong>
+                      </p>
+                    </div>
+                    <div className="d-flex flex-column ms-lg-auto me-lg-5 justify-content-center align-items-center justify-content-sm-start align-items-sm-start">
+                      <p>
+                        Owned By <strong>{project?.CreatedByName}</strong>
+                      </p>
+                      <p>
+                        Published on{" "}
+                        <strong>
+                          {new Date(project?.createdAt).toLocaleString()}
+                        </strong>
+                      </p>
+                    </div>
                   </div>
-                  <div className="d-flex flex-column ms-auto me-5">
-                    <p>
-                      Owned By <strong>Mohsin Iqbal</strong>
-                    </p>
-                    <p>
-                      Published on{" "}
-                      <strong>
-                        {new Date(project?.createdAt).toLocaleString()}
-                      </strong>
-                    </p>
-                  </div>
-                  <FaCaretRight className="fs-3 my-auto" />
+                  <FaCaretRight className="fs-3  my-auto me-auto mx-auto mx-sm-0" />
                 </li>
               ))}
             </ul>
           </div>
-          <div className="col-12">
+          <div className="col-12" id="drop">
             <FileDropZone dropfor={"new"} />
           </div>
         </div>

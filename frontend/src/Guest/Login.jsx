@@ -2,7 +2,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import axios from "axios";
 import { FaEye, FaRegEyeSlash } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -138,7 +138,7 @@ function Login() {
   return (
     <>
       <div className="row justify-content-center flex-column align-items-center pt-5">
-        <div className="col-6 my-5 py-5">
+        <div className="col-12 col-md-8 col-lg-6 my-5 py-5">
           {load && <Loader />}
           <div className="loginForm">
             <h3 className="text-center">Login to Weblift</h3>
@@ -194,16 +194,17 @@ function Login() {
                 <button type="submit" className="btn-main">
                   Login
                 </button>
-                <p className="ms-2 my-2">Forgot Password?</p>
               </div>
-              <p className="ms-2 my-2">New to Weblift? Signup now.</p>
+              <p className="ms-2 my-2">
+                New to Weblift?{" "}
+                <Link to={"/signup"} className="text-light">
+                  Signup now
+                </Link>
+              </p>
             </form>
             <hr />
             <h5 className="text-center">Or</h5>
             <div className="d-flex justify-content-center flex-column align-items-center">
-              <button className="w-75 rounded-pill my-2">
-                Login with Google <FcGoogle className="fs-4" />
-              </button>
               <button
                 className="w-75 rounded-pill my-2"
                 onClick={loginWithGithub}

@@ -105,7 +105,7 @@ export default function TeamList(props) {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="">
       <div className="card team-card">
         <div className="card-body">
           <h5 className="card-title d-flex justify-content-between pt-0">

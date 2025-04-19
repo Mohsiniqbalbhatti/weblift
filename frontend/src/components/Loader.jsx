@@ -9,7 +9,7 @@ function Loader() {
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "rgba(99, 27, 27, 0.8)", // Optional: Add a semi-transparent background
+        backgroundColor: "#34d0bb3a", // Optional: Add a semi-transparent background
         zIndex: 9999, // Ensure it sits above other elements
       }}
       className="d-flex justify-content-center align-items-center"

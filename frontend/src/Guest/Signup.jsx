@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader";
 import { FaEye, FaRegEyeSlash } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 function Signup() {
   const [load, setLoad] = useState(false);
@@ -139,6 +140,12 @@ function Signup() {
                 <span className="text-danger">{errors.password?.message}</span>
               )}
             </div>
+            <p className="ms-2 my-2">
+              Already have an account or Github?
+              <Link to={"/login"} className="text-light">
+                Login Now!
+              </Link>
+            </p>
             <button type="submit" className="btn-main">
               Signup{" "}
             </button>

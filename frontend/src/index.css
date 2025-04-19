@@ -142,13 +142,35 @@ body {
   color: var(--light-cream-clr);
   border-color: var(--light-cream-clr) !important;
 }
+.dropdown-bg {
+  background-color: rgba(24, 34, 47, 0.5);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.dropdown-item {
+  color: white;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(24, 34, 47, 0.5);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+/* Scoped to class (safer than global input) */
+input:disabled::placeholder {
+  color: black !important;
+}
+
 /* Navbar Styling */
 .nav-bg {
   background-color: rgba(24, 34, 47, 0.5);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-
+.navbar-toggler-icon {
+  filter: invert(1) !important;
+}
 .navbar-brand {
   color: var(--white-clr) !important;
   cursor: pointer;
@@ -336,4 +358,16 @@ th {
   backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   color: white !important;
+}
+
+@media screen and (max-width: 991.98px) {
+  .navbar {
+    background-color: rgba(24, 34, 47, 0.5);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .analytics-box {
+    /* border: 1px solid #ededd6 !important; */
+    max-width: 100%;
+  }
 }

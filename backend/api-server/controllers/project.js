@@ -10,6 +10,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { randomBytes } from "crypto";
+import { error } from "console";
 export const newProject = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -406,12 +407,21 @@ export const analytics = async (req, res) => {
       .select("dailyVisits createdAt")
       .lean();
 
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
     const formattedData = project.dailyVisits
       ?.map((entry) => ({
-        date: entry.date.toISOString().split("T")[0],
+        date: new Date(entry.date).toISOString().split("T")[0],
         visitors: entry.count,
       }))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (!formattedData?.length || formattedData?.length <= 0) {
+      console.log("no analytics founds");
+      return res.status(202).json({ message: "No Analytics Found" });
+    }
 
     res.json({
       dailyVisits: formattedData,
