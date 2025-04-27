@@ -91,7 +91,7 @@ const init = async () => {
     const upload = new Upload({
       client: s3Client,
       params: {
-        Bucket: "weblift",
+        Bucket: "webliftfyp",
         Key: `__output/${PROJECT_ID}/${file}`,
         Body: fs.createReadStream(filePath),
         ContentType: mime.lookup(filePath) || "application/octet-stream",

@@ -22,7 +22,7 @@ app.use(
 app.use(cookie());
 await connectDB();
 
-// initKafkaConsumer();
+initKafkaConsumer();
 app.use(express.json());
 app.use("/user", userRouter);
 app.use("/project", projectRouter);

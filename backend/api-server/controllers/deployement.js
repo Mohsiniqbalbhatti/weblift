@@ -13,8 +13,8 @@ const ecsClient = new ECSClient({
 
 // configuration for task command
 const config = {
-  CLUSTER: "arn:aws:ecs:eu-north-1:615299731132:cluster/builder-cluster",
-  TASK: "arn:aws:ecs:eu-north-1:615299731132:task-definition/builder-task",
+  CLUSTER: "arn:aws:ecs:eu-north-1:457213529658:cluster/Weblift_",
+  TASK: "arn:aws:ecs:eu-north-1:457213529658:task-definition/weblift_task:1",
 };
 
 // deployment function
@@ -49,21 +49,24 @@ export const deployment = async (req, res) => {
         awsvpcConfiguration: {
           assignPublicIp: "ENABLED",
           subnets: [
-            "subnet-0fc891eb2753d3bde",
-            "subnet-07df3a79abb2ab0c4",
-            "subnet-0386453c079a52e54",
+            "subnet-051700275a58ce0c0",
+            "subnet-0065ecfbe73b2420c",
+            "subnet-013cd7596c58f5d09",
           ],
-          securityGroups: ["sg-0975403babdcd76b9"],
+          securityGroups: ["sg-0a6f7ba99ae0c765d"],
         },
       },
       overrides: {
         containerOverrides: [
           {
-            name: "builder-image",
+            name: "latest",
             environment: [
               { name: "GIT_REPOSITORY_URL", value: project.gitUrl },
               { name: "PROJECT_ID", value: projectId },
-              { name: "BUILD_COMMAND", value: project.buildComand },
+              {
+                name: "BUILD_COMMAND",
+                value: project.buildComand || "npm run build",
+              },
               { name: "DEPLOYEMENT_ID", value: deployment._id.toString() },
             ],
           },

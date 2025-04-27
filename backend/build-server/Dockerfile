@@ -1,5 +1,5 @@
 # Use the Ubuntu 20.04 (Focal Fossa) base image
-FROM ubuntu:focal
+FROM ubuntu:focal 
 
 # Update the package lists to fetch the latest versions
 RUN apt-get update

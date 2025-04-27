@@ -50,7 +50,7 @@ export const signup = async (req, res) => {
     const to = email;
     const subject = `Kindly Verify Your WebLift Account`;
     const body = `<h1>Hey ${name}!</h1> </br> <p> Kindly verify your <strong>Weblift</strong> account. </br> This Link is valid for 15 minutes. But you can always request a new link from your account.</br> Here is the verification Link: </p>`;
-    // await sendMail(to, subject, body);
+    await sendMail(to, subject, body);
 
     return res
       .status(200)

@@ -95,9 +95,14 @@ function Nav2() {
                 aria-labelledby="userDropdown"
               >
                 <li>
-                  <a className="dropdown-item  text-light" href="/profile">
+                  <Link className="dropdown-item  text-light" to="/profile">
                     Profile
-                  </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item  text-light" to="/dashboard">
+                    Dashboard{" "}
+                  </Link>
                 </li>
 
                 <li>
