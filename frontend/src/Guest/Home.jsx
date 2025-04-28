@@ -19,12 +19,18 @@ function Home() {
           </p>
         </div>
         <div className="col-8 col-sm-12 d-flex justify-content-around flex-column flex-sm-row">
-          <button className="btn btn-main ms-sm-auto mt-1 me-0 me-sm-1">
+          <Link
+            className="btn btn-main ms-sm-auto mt-1 me-0 me-sm-1"
+            to={"/login"}
+          >
             Deploy Now
-          </button>
-          <button className="btn btn-2nd me-sm-auto mt-1 ms-0 ms-sm-1">
+          </Link>
+          <Link
+            className="btn btn-2nd me-sm-auto mt-1 ms-0 ms-sm-1"
+            to={"/docs"}
+          >
             Quick Guide
-          </button>
+          </Link>
         </div>
       </div>
       <div className="row justify-content-center align-items-center pt-5">
@@ -163,14 +169,16 @@ function Home() {
           <p className="text-center  text-light text-center">
             Head over to our docs for a full list of framework configurations.
             <br />
-            <Link>Go to the Docs!</Link>
+            <Link to={"/docs"}>Go to the Docs!</Link>
           </p>
         </div>
         <div className="col-12 my-5 d-flex  justify-content-center flex-column align-items-center">
           <h3 className="text-cream text-uppercase text-center">
             Ready to lift your first site?{" "}
           </h3>
-          <button className="btn-main">Request a Demo</button>
+          <Link className="btn-main" to={"/contact"}>
+            Request a Demo
+          </Link>
         </div>
       </div>
       <div

@@ -22,7 +22,6 @@ router.post("/connectGithub", validateToken, connectGithub);
 router.post("/contact", contact);
 router.post("/updatePassword", validateToken, ChangePassword);
 router.post("/updateEmail", validateToken, changeEmail);
-router.post("/contact", contact);
 
 router.get("/", validateToken, sendUser);
 export default router;
