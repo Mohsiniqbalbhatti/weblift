@@ -29,12 +29,16 @@ const BUILD_COMMAND = process.env.BUILD_COMMAND;
 const kafka = new Kafka({
   clientId: `docker-build-server ${DEPLOYEMENT_ID}`,
   brokers: [process.env.KAFKA_BROKER],
-  ssl: { ca: [fs.readFileSync(path.join(__dirname, "kafka.pem"), "utf-8")] },
+  ssl: {
+    rejectUnauthorized: false,
+    ca: [fs.readFileSync(path.join(__dirname, "kafka.pem"), "utf-8")],
+  },
   sasl: {
     username: process.env.KAFKA_USERNAME,
     password: process.env.KAFKA_PASSWORD,
     mechanism: "plain",
   },
+  connectionTimeout: 30000,
 });
 
 // setting up kakfa producer

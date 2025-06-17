@@ -10,7 +10,7 @@ function Guest() {
   return (
     <>
       <div className="container-fluid">
-        {user ? <Nav2 /> : <Navbar />}
+        <Navbar />
         <Outlet />
         <Footer />
         <div className="stars"></div>

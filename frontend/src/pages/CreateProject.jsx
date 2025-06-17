@@ -95,6 +95,8 @@ function CreateProject() {
   //fetch repos
   useEffect(() => {
     if (!githubToken) {
+      console.log("Github token from user", githubToken);
+      console.log("user", user);
       setGithubLogin(false);
       return;
     }

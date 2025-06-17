@@ -1,20 +1,22 @@
 import { Toaster } from "react-hot-toast";
 import { useUser } from "./context/AuthUser";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Loader from "./components/Loader";
 import Footer from "./components/Footer";
 import Nav2 from "./pages/Nav2";
+import { useEffect } from "react";
 function App() {
   const { user, load } = useUser();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user && !load) {
+      navigate("/", { replace: true });
+    }
+  }, [load, user, navigate]);
+
   if (load) {
     return <Loader />;
   }
-
-  if (!user) {
-    <Navigate to={"/"} />;
-    return null;
-  }
-
   return (
     <div className="container-fluid">
       <Nav2 />

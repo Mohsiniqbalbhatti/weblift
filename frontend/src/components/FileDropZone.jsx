@@ -30,6 +30,7 @@ function FileDropZone(props) {
     "pdf",
     "xml",
     "ico",
+    "wav",
   ]);
 
   const { getRootProps, getInputProps } = useDropzone({

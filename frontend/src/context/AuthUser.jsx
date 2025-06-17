@@ -3,12 +3,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [load, setLoad] = useState(false);
+  const [load, setLoad] = useState(true);
   useEffect(() => {
     if (!user) {
-      // ✅ Fetch only if user is null
       const fetchUser = async () => {
-        setLoad(true);
         try {
           const response = await axios.get(
             `${import.meta.env.VITE_BACKEND_URL}user`,
@@ -27,7 +25,7 @@ export const UserProvider = ({ children }) => {
 
       fetchUser();
     }
-  }, []);
+  }, [user, load]);
 
   return (
     <>

@@ -9,18 +9,19 @@ import { useUser } from "../context/AuthUser";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 function Dashboard() {
-  const { user } = useUser();
+  const { user, load } = useUser();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!user && !load) {
+      navigate("/", { replace: true });
+    }
+  }, [load, user, navigate]);
 
-  if (!user) {
-    navigate("/");
-    return null;
-  }
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  const [load, setLoad] = useState(false);
+  const [loading, setLoading] = useState(false);
   const fetchProjects = async () => {
-    setLoad(true);
+    setLoading(true);
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}project`,
@@ -29,14 +30,13 @@ function Dashboard() {
         }
       );
       if (res.data) {
-        console.log("res", res?.data);
         setProjects(res.data.projects);
         setFilteredProjects(res.data.projects);
       }
     } catch (error) {
       console.log("error", error);
     } finally {
-      setLoad(false);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -58,8 +58,7 @@ function Dashboard() {
     const inviteCodeData = {
       inviteCode: data.inviteCode,
     };
-    console.log("team code", inviteCodeData);
-    setLoad(true);
+    setLoading(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}project/joinTeam`,
@@ -77,7 +76,7 @@ function Dashboard() {
       console.log("error joining team", error);
       toast.error(error?.response?.data?.message || "Something Went Wrong!");
     } finally {
-      setLoad(false);
+      setLoading(false);
     }
   };
 
@@ -100,7 +99,7 @@ function Dashboard() {
   return (
     <>
       <div className="row  pt-5 px-3">
-        {load && <Loader />}
+        {loading && <Loader />}
         <div className="dashboard mt-5">
           <div className="col-12 d-flex justify-content-between  align-items-center flex-column flex-md-row">
             <input

@@ -20,7 +20,7 @@ function Home() {
         </div>
         <div className="col-8 col-sm-12 d-flex justify-content-around flex-column flex-sm-row">
           <Link
-            className="btn btn-main ms-sm-auto mt-1 me-0 me-sm-1"
+            className="btn btn-main bg- ms-sm-auto mt-1 me-0 me-sm-1"
             to={"/login"}
           >
             Deploy Now
