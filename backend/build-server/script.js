@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 // Use environment variables for sensitive information
 
 const s3Client = new S3Client({
-  region: "eu-north-1",
+  region: "us-east-1",
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -95,7 +95,7 @@ const init = async () => {
     const upload = new Upload({
       client: s3Client,
       params: {
-        Bucket: "webliftfyp",
+        Bucket: "webliftfyp1",
         Key: `__output/${PROJECT_ID}/${file}`,
         Body: fs.createReadStream(filePath),
         ContentType: mime.lookup(filePath) || "application/octet-stream",

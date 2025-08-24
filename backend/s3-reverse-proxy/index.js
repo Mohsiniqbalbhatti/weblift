@@ -9,7 +9,7 @@ const PORT = 8000;
 connectDB();
 
 // S3 Base URL
-const baseUrl = "https://webliftfyp.s3.eu-north-1.amazonaws.com/__output/";
+const baseUrl = "https://webliftfyp1.s3.us-east-1.amazonaws.com/__output/";
 
 // Create Proxy Server
 const proxy = httpProxy.createProxyServer({ changeOrigin: true });

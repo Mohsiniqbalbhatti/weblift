@@ -4,7 +4,7 @@ import Deployement from "../models/deployement.js";
 import User from "../models/user.js";
 // seting up ECS clinet
 const ecsClient = new ECSClient({
-  region: "eu-north-1",
+  region: "us-east-1",
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
