@@ -27,7 +27,7 @@ const DEPLOYEMENT_ID = process.env.DEPLOYEMENT_ID;
 const BUILD_COMMAND = process.env.BUILD_COMMAND;
 // configure kafka
 const kafka = new Kafka({
-  clientId: `docker-build-server ${DEPLOYEMENT_ID}`,
+  clientId: `Weblift-api-server`,
   brokers: [process.env.KAFKA_BROKER],
   ssl: {
     rejectUnauthorized: false,
