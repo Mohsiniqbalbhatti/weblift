@@ -259,7 +259,7 @@ export const changeProjectName = async (req, res) => {
 // controller for easydrop
 
 const s3Client = new S3Client({
-  region: "eu-north-1",
+  region: "us-east-1",
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -305,7 +305,7 @@ export const easyDrop = async (req, res) => {
       const fileKey = `__output/${projectId}/${file.originalname}`;
       return s3Client.send(
         new PutObjectCommand({
-          Bucket: "webliftfyp",
+          Bucket: "webliftfyp1",
           Key: fileKey,
           Body: fs.readFileSync(file.path),
           ContentType: file.mimetype,
@@ -316,7 +316,7 @@ export const easyDrop = async (req, res) => {
     await Promise.all(uploadPromises);
 
     // Update project with S3 location
-    project.s3Location = `s3://webliftfyp/__output/${projectId}`;
+    project.s3Location = `s3://webliftfyp1/__output/${projectId}`;
     await project.save();
 
     // Clean temp files
@@ -355,7 +355,7 @@ export const updateProjectFiles = async (req, res) => {
 
     // Delete existing files in S3
     const listParams = {
-      Bucket: "webliftfyp",
+      Bucket: "webliftfyp1",
       Prefix: `__output/${projectId}/`,
     };
 
@@ -364,7 +364,7 @@ export const updateProjectFiles = async (req, res) => {
     );
     if (listedObjects.Contents?.length > 0) {
       const deleteParams = {
-        Bucket: "webliftfyp",
+        Bucket: "webliftfyp1",
         Delete: {
           Objects: listedObjects.Contents.map(({ Key }) => ({ Key })),
         },
@@ -377,7 +377,7 @@ export const updateProjectFiles = async (req, res) => {
       const fileKey = `__output/${projectId}/${file.originalname}`;
       return s3Client.send(
         new PutObjectCommand({
-          Bucket: "webliftfyp",
+          Bucket: "webliftfyp1",
           Key: fileKey,
           Body: fs.readFileSync(file.path),
           ContentType: file.mimetype,

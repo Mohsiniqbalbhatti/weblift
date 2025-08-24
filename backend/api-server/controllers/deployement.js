@@ -13,8 +13,8 @@ const ecsClient = new ECSClient({
 
 // configuration for task command
 const config = {
-  CLUSTER: "arn:aws:ecs:eu-north-1:457213529658:cluster/Weblift_",
-  TASK: "arn:aws:ecs:eu-north-1:457213529658:task-definition/weblift_task:1",
+  CLUSTER: "arn:aws:ecs:us-east-1:415094953274:cluster/myWebliftCluster",
+  TASK: "arn:aws:ecs:us-east-1:415094953274:task-definition/weblift:1",
 };
 
 // deployment function
