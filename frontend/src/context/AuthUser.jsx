@@ -4,8 +4,10 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [load, setLoad] = useState(true);
+
   useEffect(() => {
-    if (!user) {
+    // Only fetch user if we don't have one and we're not already loading
+    if (!user && load) {
       const fetchUser = async () => {
         try {
           const response = await axios.get(
@@ -25,7 +27,7 @@ export const UserProvider = ({ children }) => {
 
       fetchUser();
     }
-  }, [user, load]);
+  }, [load]); // Remove user from dependencies to prevent infinite loop
 
   return (
     <>

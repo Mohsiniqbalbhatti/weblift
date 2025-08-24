@@ -11,6 +11,14 @@ export const signup = async (req, res) => {
     if (!email || !password || !name) {
       return res.status(400).json({ message: "All Fields are Required" });
     }
+
+    const userExist = await User.findOne({ email });
+
+    if (userExist)
+      return res
+        .status(400)
+        .json({ message: "User Already Exist! Kindly Login" });
+
     const validEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const validName = /^[A-Za-z ]{2,22}$/;
     const validPassword =
@@ -28,13 +36,6 @@ export const signup = async (req, res) => {
           "Password must be 8-20 characters long and include at least one uppercase letter, one lowercase letter, and one number.",
       });
     }
-
-    const userExist = await User.findOne({ email });
-
-    if (userExist)
-      return res
-        .status(400)
-        .json({ message: "User Already Exist! Kindly Login" });
 
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);

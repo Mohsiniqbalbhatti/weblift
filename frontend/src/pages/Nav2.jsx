@@ -42,11 +42,13 @@ function Nav2() {
       );
 
       if (res.data) {
+        // Clear user state first
         setUser(null);
-        navigate("/");
+        // Navigate after ensuring state is updated
+        navigate("/", { replace: true });
       }
     } catch (error) {
-      console.log("Login Error", error);
+      console.log("Logout Error", error);
       toast.error(error?.response?.data?.message || "Something Went Wrong!");
     } finally {
       setLaod(false);

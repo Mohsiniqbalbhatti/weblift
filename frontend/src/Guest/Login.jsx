@@ -71,7 +71,7 @@ function Login() {
   const eyeplace = {
     position: "absolute",
     right: "33px",
-    top: "39.9%",
+    top: "45.9%",
     transform: "translateY(-50%)",
     cursor: "pointer",
     color: "black",
@@ -137,9 +137,29 @@ function Login() {
   }, []);
   return (
     <>
+      {load && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            zIndex: 10000,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Loader />
+          <p className="mt-3 text-center">Signing in...</p>
+        </div>
+      )}
       <div className="row justify-content-center flex-column align-items-center pt-5">
         <div className="col-12 col-md-8 col-lg-6 my-5 py-5">
-          {load && <Loader />}
           <div className="loginForm">
             <h3 className="text-center">Login to Weblift</h3>
             <hr />

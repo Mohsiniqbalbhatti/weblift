@@ -32,6 +32,9 @@ function CreateProject() {
       gitUrl: selectedRepo?.clone_url,
       buildComand: data.buildComand,
     };
+
+    let navigationTimeout;
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}project`,
@@ -43,16 +46,24 @@ function CreateProject() {
       if (res.status === 200) {
         toast.success("Project Create SuccessFully");
 
-        setInterval(() => {
+        // Keep loading state during navigation to prevent user interaction
+        // Navigate after a short delay to ensure backend processing is complete
+        navigationTimeout = setTimeout(() => {
           navigate(`/project/${res?.data?.projectID}`);
-        }, 2000);
+        }, 1500); // Increased delay to ensure backend processing is complete
       }
     } catch (error) {
       console.error("create Projet Error", error);
       toast.error(error?.response?.data?.message || "Something Went Wrong!");
-    } finally {
-      setLoad(false);
+      setLoad(false); // Only reset load state on error
     }
+
+    // Cleanup function to clear timeout if component unmounts
+    return () => {
+      if (navigationTimeout) {
+        clearTimeout(navigationTimeout);
+      }
+    };
   };
 
   //check name availability
@@ -176,8 +187,33 @@ function CreateProject() {
 
   return (
     <>
+      {load && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            zIndex: 10000,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Loader />
+          <p className="mt-3 text-center">
+            Creating project from GitHub repository...
+          </p>
+          <p className="mt-2 text-center text-muted">
+            Please wait while we set up your project
+          </p>
+        </div>
+      )}
       <div className="row pt-5 px-2 px-lg-3" style={{ minHeight: "80vh" }}>
-        {load && <Loader />}
         {githubLogin ? (
           <div className="col-12 mt-5  card">
             <h3 className="text-center mt-4">Your Github Respositories</h3>

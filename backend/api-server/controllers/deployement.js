@@ -14,7 +14,7 @@ const ecsClient = new ECSClient({
 // configuration for task command
 const config = {
   CLUSTER: "arn:aws:ecs:us-east-1:415094953274:cluster/myWebliftCluster",
-  TASK: "arn:aws:ecs:us-east-1:415094953274:task-definition/weblift:1",
+  TASK: "arn:aws:ecs:us-east-1:415094953274:task-definition/weblift1:1",
 };
 
 // deployment function
@@ -49,17 +49,17 @@ export const deployment = async (req, res) => {
         awsvpcConfiguration: {
           assignPublicIp: "ENABLED",
           subnets: [
-            "subnet-051700275a58ce0c0",
-            "subnet-0065ecfbe73b2420c",
-            "subnet-013cd7596c58f5d09",
+            "subnet-069ab6c0a25ef47c4",
+            "subnet-0005bd4d21f4e2ba1",
+            "subnet-0fff2733d197bf865",
           ],
-          securityGroups: ["sg-0a6f7ba99ae0c765d"],
+          securityGroups: ["sg-07e21bee6ac180202"],
         },
       },
       overrides: {
         containerOverrides: [
           {
-            name: "latest",
+            name: "weblift",
             environment: [
               { name: "GIT_REPOSITORY_URL", value: project.gitUrl },
               { name: "PROJECT_ID", value: projectId },

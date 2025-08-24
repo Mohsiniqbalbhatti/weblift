@@ -20,17 +20,118 @@ function FileDropZone(props) {
   } = useForm();
 
   const allowedExtensions = new Set([
+    // Web files
     "html",
+    "htm",
+    "xhtml",
+    "shtml",
     "css",
+    "scss",
+    "sass",
+    "less",
     "js",
-    "png",
-    "jpeg",
-    "jpg",
-    "gif",
-    "pdf",
+    "jsx",
+    "ts",
+    "tsx",
+    "mjs",
+    "cjs",
+    "json",
     "xml",
+    "svg",
+    "rss",
+    "atom",
+
+    // Images
+    "png",
+    "jpg",
+    "jpeg",
+    "gif",
+    "bmp",
+    "tiff",
+    "tif",
+    "webp",
+    "avif",
     "ico",
+    "cur",
+    "svg",
+
+    // Documents
+    "pdf",
+    "txt",
+    "md",
+    "markdown",
+    "rtf",
+    "doc",
+    "docx",
+    "xls",
+    "xlsx",
+    "ppt",
+    "pptx",
+    "odt",
+    "ods",
+    "odp",
+    "csv",
+
+    // Media files
+    "mp3",
     "wav",
+    "ogg",
+    "flac",
+    "aac",
+    "wma",
+    "mp4",
+    "avi",
+    "mov",
+    "wmv",
+    "flv",
+    "webm",
+    "mkv",
+    "mpg",
+    "mpeg",
+    "3gp",
+    "m4v",
+
+    // Fonts
+    "ttf",
+    "otf",
+    "woff",
+    "woff2",
+    "eot",
+
+    // Archives
+    "zip",
+    "rar",
+    "7z",
+    "tar",
+    "gz",
+    "bz2",
+
+    // Data files
+    "csv",
+    "tsv",
+    "sql",
+    "db",
+    "sqlite",
+    "yaml",
+    "yml",
+    "toml",
+    "ini",
+    "cfg",
+    "conf",
+
+    // Other static files
+    "map",
+    "lock",
+    "log",
+    "env",
+    "gitignore",
+    "htaccess",
+    "htpasswd",
+    "robots",
+    "sitemap",
+    "manifest",
+    "service-worker",
+    "sw",
   ]);
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -150,9 +251,32 @@ function FileDropZone(props) {
 
   return (
     <>
-      {load && <Loader />}
+      {load && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            zIndex: 10000, // Higher than modal z-index
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Loader />
+          <p className="mt-3 text-center">
+            {dropfor === "new"
+              ? "Creating project and uploading files..."
+              : "Updating project files..."}
+          </p>
+        </div>
+      )}
       <div className="">
-        {" "}
         {/* Project Name Modal - Only for new projects */}
         {dropfor === "new" && (
           <div
@@ -261,7 +385,8 @@ function FileDropZone(props) {
               : "Click to select folder (choose the folder itself, not its contents)"}
           </small>
           <small className="text-light mt-1">
-            Allowed files: HTML, CSS, JS, Images (PNG, JPEG, GIF), PDF
+            Allowed files: Web files (HTML, CSS, JS), Images, Documents, Media,
+            Fonts, Archives, Data files, and more
           </small>
         </div>
       </div>

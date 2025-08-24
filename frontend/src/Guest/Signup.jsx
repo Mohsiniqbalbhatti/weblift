@@ -67,8 +67,28 @@ function Signup() {
   };
   return (
     <>
-      <div className="row justify-content-center flex-column align-items-center  pt-5 ">
-        {load && <Loader />}
+      {load && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            zIndex: 10000,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Loader />
+          <p className="mt-3 text-center">Creating account...</p>
+        </div>
+      )}
+      <div className="row justify-content-center flex-column align-items-center pt-5">
         <div className="col-6 loginForm my-5 py-5">
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* input for name */}

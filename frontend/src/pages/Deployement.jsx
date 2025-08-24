@@ -92,7 +92,7 @@ function Deployement() {
                   <p className="">Deployment Id: {deployment?._id}</p>
                   <a
                     className="cursor-pointer text-white"
-                    href={`http://${deployment?.projectName}.localhost:8000`}
+                    href={`http://${deployment?.projectName}.204.236.237.162:8000`}
                     target="_blank"
                   >
                     Visit Live{" "}

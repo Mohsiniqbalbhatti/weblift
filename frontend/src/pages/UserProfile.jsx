@@ -116,8 +116,28 @@ function UserProfile() {
     }
   };
   return (
-    <div>
-      {load && <Loader />}
+    <>
+      {load && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            zIndex: 10000,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Loader />
+          <p className="mt-3 text-center">Updating profile...</p>
+        </div>
+      )}
       <div className="row pt-5 px-2 px-lg-3 justify-content-center">
         <div className="col-12 col-md-8 col-lg-8 my-2  py-4 rounded card mt-5">
           <h4>
@@ -259,7 +279,7 @@ function UserProfile() {
           </form>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

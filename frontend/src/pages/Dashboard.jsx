@@ -98,8 +98,28 @@ function Dashboard() {
 
   return (
     <>
+      {loading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            zIndex: 10000,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Loader />
+          <p className="mt-3 text-center">Loading projects...</p>
+        </div>
+      )}
       <div className="row  pt-5 px-3">
-        {loading && <Loader />}
         <div className="dashboard mt-5">
           <div className="col-12 d-flex justify-content-between  align-items-center flex-column flex-md-row">
             <input

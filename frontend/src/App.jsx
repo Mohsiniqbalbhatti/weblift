@@ -8,8 +8,10 @@ import { useEffect } from "react";
 function App() {
   const { user, load } = useUser();
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!user && !load) {
+    // Only redirect if we're not loading and have no user
+    if (!load && !user) {
       navigate("/", { replace: true });
     }
   }, [load, user, navigate]);
@@ -17,6 +19,12 @@ function App() {
   if (load) {
     return <Loader />;
   }
+
+  // Don't render the app if there's no user
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="container-fluid">
       <Nav2 />
