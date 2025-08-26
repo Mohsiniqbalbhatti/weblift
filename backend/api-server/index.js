@@ -12,13 +12,29 @@ import cors from "cors";
 const app = express();
 const PORT = 9000;
 
-app.use(
-  cors({
-    origin: "http://ihtishamhassanltd.com",
-    credentials: true,
-    methods: ["GET", "POST", "DELETE"],
-  })
-);
+const allowedOrigins = [
+  "https://ihtishamhassanltd.com", 
+  "http://ihtishamhassanltd.com",  
+  "http://204.236.237.162"         
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("CORS: Origin not allowed"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "DELETE", "OPTIONS"], 
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "X-XSRF-TOKEN"]
+};
+
+app.options("*", cors(corsOptions)); 
+app.use(cors(corsOptions));
 app.use(cookie());
 await connectDB();
 
