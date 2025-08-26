@@ -14,7 +14,7 @@ const PORT = 9000;
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "http://ihtishamhassanltd.com",
     credentials: true,
     methods: ["GET", "POST", "DELETE"],
   })
@@ -24,7 +24,7 @@ await connectDB();
 
 initKafkaConsumer();
 app.use(express.json());
-app.use("/user", userRouter);
+app.use("api/user", userRouter);
 app.use("/project", projectRouter);
 app.use("/logs", logsRouter);
 app.use("/deploy", deployementRouter);

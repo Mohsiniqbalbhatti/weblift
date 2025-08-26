@@ -230,7 +230,7 @@ function ProjectSetting() {
                         <h5 className="card-title">{project?.project_Name}</h5>
                         <a
                           className="cursor-pointer text-white"
-                          href={`http://${project?.project_Name}.204.236.237.162:8000`}
+                          href={`http://${project?.project_Name}.ihtishamhassanltd.com`}
                           target="_blank"
                         >
                           Visit Live{" "}
